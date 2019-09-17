@@ -60,4 +60,9 @@ dependencies {
      * External
      */
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    /*
+     * Libraries
+     */
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.6'
 }
