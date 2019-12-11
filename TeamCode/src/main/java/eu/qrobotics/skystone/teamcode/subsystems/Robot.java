@@ -26,6 +26,8 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
     private ExpansionHubEx hub2;
     private RevBulkData revBulkData1;
     private RevBulkData revBulkData2;
+    private boolean isHub1Required = false;
+    private boolean isHub2Required = false;
 
     public Drivetrain drive;
     public Intake intake;
@@ -49,6 +51,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 startTime = getCurrentTime(); // Get start time of update
+                updateBulkData();
                 revBulkData1 = hub1.getBulkInputData(); // Get data from hubs
                 revBulkData2 = hub2.getBulkInputData();
                 for (Subsystem subsystem : subsystems) { // Update all subsystems
@@ -79,6 +82,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         top100 = new MovingStatistics(100);
         top250 = new MovingStatistics(250);
         dashboard = FtcDashboard.getInstance();
+        dashboard.setTelemetryTransmissionInterval(25);
 
         hub1 = opMode.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
         hub2 = opMode.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
@@ -136,6 +140,14 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         }
     }
 
+    public void setIsHub1Required(boolean value) {
+        isHub1Required = value;
+    }
+
+    public void setIsHub2Required(boolean value) {
+        isHub2Required = value;
+    }
+
     public ExpansionHubEx getHub1() {
         return hub1;
     }
@@ -150,6 +162,13 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
 
     public RevBulkData getRevBulkDataHub2() {
         return revBulkData2;
+    }
+
+    private void updateBulkData() {
+        if (isHub1Required)
+            revBulkData1 = hub1.getBulkInputData();
+        if (isHub2Required)
+            revBulkData2 = hub2.getBulkInputData();
     }
 
     public void sleep(double seconds) {
