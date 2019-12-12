@@ -22,6 +22,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -33,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import eu.qrobotics.skystone.teamcode.util.DashboardUtil;
+import eu.qrobotics.skystone.teamcode.util.MecanumUtil;
 
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.BASE_CONSTRAINTS;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.HEADING_PID;
@@ -164,6 +166,16 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         }
         throw new AssertionError();
     }
+
+    public void setMotorPowersFromGamepad(Gamepad gg, double scale) {
+        MecanumUtil.Wheels wh = MecanumUtil.motionToWheels(MecanumUtil.joystickToMotion(gg.left_stick_x, gg.left_stick_y,
+                gg.right_stick_x, gg.right_stick_y)).scaleWheelPower(scale);
+        motorPowers[0] = wh.frontLeft;
+        motorPowers[1] = wh.backLeft;
+        motorPowers[2] = wh.backRight;
+        motorPowers[3] = wh.frontRight;
+    }
+
 
     @Override
     public void update() {
