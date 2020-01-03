@@ -33,6 +33,8 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
     public Intake intake;
     public Elevator elevator;
     public Arm arm;
+    public FoundationGrabber foundationGrabber;
+    public RuletaDeCacatALuiTudor ruleta;
 
     private List<Subsystem> subsystems;
     private List<Subsystem> subsystemsWithProblems;
@@ -81,6 +83,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         top10 = new MovingStatistics(10);
         top100 = new MovingStatistics(100);
         top250 = new MovingStatistics(250);
+
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
@@ -92,6 +95,14 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
 
         //region Initialize subsystems
         subsystems = new ArrayList<>();
+
+        try {
+            arm = new Arm(opMode.hardwareMap, this);
+            subsystems.add(arm);
+        } catch (Exception e) {
+            Log.w(TAG, "skipping Arm");
+        }
+
         try {
             drive = new Drivetrain(opMode.hardwareMap, this, isAutonomous);
             subsystems.add(drive);
@@ -100,24 +111,31 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         }
 
         try {
-            intake = new Intake(opMode.hardwareMap, this);
-            subsystems.add(intake);
-        } catch (Exception e) {
-            Log.w(TAG, "skipping Intake");
-        }
-
-        try {
-            elevator = new Elevator(opMode.hardwareMap, this);
+            elevator = new Elevator(opMode.hardwareMap, this, isAutonomous);
             subsystems.add(elevator);
         } catch (Exception e) {
             Log.w(TAG, "skipping Elevator");
         }
 
         try {
-            arm = new Arm(opMode.hardwareMap, this);
-            subsystems.add(arm);
+            intake = new Intake(opMode.hardwareMap, this, isAutonomous);
+            subsystems.add(intake);
         } catch (Exception e) {
-            Log.w(TAG, "skipping Arm");
+            Log.w(TAG, "skipping Intake");
+        }
+
+        try {
+            foundationGrabber = new FoundationGrabber(opMode.hardwareMap, this);
+            subsystems.add(foundationGrabber);
+        } catch (Exception e) {
+            Log.w(TAG, "skipping FoundationGrabber");
+        }
+
+        try {
+            ruleta = new RuletaDeCacatALuiTudor(opMode.hardwareMap, this);
+            subsystems.add(ruleta);
+        } catch (Exception e) {
+            Log.w(TAG, "skipping RuletaDeCacatALuiTudor");
         }
         //endregion
 

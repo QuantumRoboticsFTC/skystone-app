@@ -1,6 +1,7 @@
 package eu.qrobotics.skystone.teamcode.opmode.cv;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,6 +15,7 @@ import eu.qrobotics.skystone.teamcode.cv.trackers.FixedStoneTracker;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
 @Autonomous
+@Disabled
 public class FixedStoneVision extends LinearOpMode {
 
     private OpenCvCamera webcam;

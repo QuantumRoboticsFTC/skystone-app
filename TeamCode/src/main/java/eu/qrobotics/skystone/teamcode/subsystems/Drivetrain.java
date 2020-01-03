@@ -113,6 +113,9 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         rightRear = hardwareMap.get(ExpansionHubMotor.class, "rightRear");
         rightFront = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
 
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (ExpansionHubMotor motor : motors) {
@@ -176,6 +179,9 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         motorPowers[3] = wh.frontRight;
     }
 
+    public double[] getMotorPower() {
+        return motorPowers;
+    }
 
     @Override
     public void update() {
