@@ -69,13 +69,13 @@ public class DoubleServoProgrammer extends OpMode {
 
     @Override
     public void init() {
-        leftServo = hardwareMap.get(Servo.class, "leftArmServo");
-        rightServo = hardwareMap.get(Servo.class, "rightArmServo");
+        leftServo = hardwareMap.get(Servo.class, "sideArmPivot");
+        rightServo = hardwareMap.get(Servo.class, "sideArmClaw");
 
         stickyGamepad = new StickyGamepad(gamepad1);
 
-        telemetry.addData("Initial Left Servo Position", currentPositionLeft);
-        telemetry.addData("Initial Right Servo Position", currentPositionRight);
+        telemetry.addData("Initial pivot Position", currentPositionLeft);
+        telemetry.addData("Initial claw Position", currentPositionRight);
     }
 
     @Override
@@ -165,4 +165,16 @@ public class DoubleServoProgrammer extends OpMode {
 
 //left: 862
 //right: 138
+
+
+//brat
+
+//0.385 horizontal
+//00 up
+
+
+//claw
+//00 fully closed
+//1 fully open
+//0.25 stonk
 

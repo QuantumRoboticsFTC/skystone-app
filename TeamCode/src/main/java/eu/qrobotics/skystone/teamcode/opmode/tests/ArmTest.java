@@ -28,9 +28,6 @@ public class ArmTest extends OpMode {
     public void loop() {
         gamepad.update();
 
-        if(gamepad.a)
-            robot.arm.armMode = Arm.ArmMode.INTAKE;
-
         if(gamepad.b)
             robot.arm.armMode = Arm.ArmMode.OUTTAKE_LOW;
 

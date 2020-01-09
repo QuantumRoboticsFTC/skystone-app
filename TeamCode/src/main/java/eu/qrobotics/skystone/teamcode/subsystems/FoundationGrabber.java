@@ -30,7 +30,7 @@ public class FoundationGrabber implements Subsystem {
         switch (foundationGrabberMode) {
             case UP:
                 leftFoundationGrabber.setPosition(0.075);
-                rightFoundationGrabber.setPosition(0.675);
+                rightFoundationGrabber.setPosition(0.725);
                 break;
             case DOWN:
                 leftFoundationGrabber.setPosition(0.675);

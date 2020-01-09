@@ -15,21 +15,21 @@ public class Arm implements Subsystem {
     }
 
     public static double GRIPPER_CLOSE_POSITION = 0.915;
-    public static double GRIPPER_OPEN_POSITION = 0.35;
+    public static double GRIPPER_OPEN_POSITION = 0.4;
     public static double GRIPPER_CAPSTONE_POSITION = 0;
 
     public enum ArmMode {
-        INTAKE,
+        //INTAKE,
         IDLE,
         IDLE_AUTONOMY,
         OUTTAKE_HIGH,
         OUTTAKE_LOW
     }
 
-    public static double ARM_LEFT_INTAKE_POSITION = 0.089;
-    public static double ARM_RIGHT_INTAKE_POSITION = 0.911;
-    public static double ARM_LEFT_IDLE_POSITION = 0.094;
-    public static double ARM_RIGHT_IDLE_POSITION = 0.906;
+    //public static double ARM_LEFT_INTAKE_POSITION = 0.089;
+    //public static double ARM_RIGHT_INTAKE_POSITION = 0.911;
+    public static double ARM_LEFT_IDLE_POSITION = 0;
+    public static double ARM_RIGHT_IDLE_POSITION = 1;
     public static double ARM_LEFT_IDLE_AUTONOMY_POSITION = 0.097;
     public static double ARM_RIGHT_IDLE_AUTONOMY_POSITION = 0.903;
     public static double ARM_LEFT_OUTTAKE_HIGH_POSITION = 0.5;
@@ -71,10 +71,10 @@ public class Arm implements Subsystem {
         }
 
         switch (armMode) {
-            case INTAKE:
-                leftArmServo.setPosition(ARM_LEFT_INTAKE_POSITION);
-                rightArmServo.setPosition(ARM_RIGHT_INTAKE_POSITION);
-                break;
+//            case INTAKE:
+//                leftArmServo.setPosition(ARM_LEFT_INTAKE_POSITION);
+//                rightArmServo.setPosition(ARM_RIGHT_INTAKE_POSITION);
+//                break;
             case IDLE:
                 leftArmServo.setPosition(ARM_LEFT_IDLE_POSITION);
                 rightArmServo.setPosition(ARM_RIGHT_IDLE_POSITION);

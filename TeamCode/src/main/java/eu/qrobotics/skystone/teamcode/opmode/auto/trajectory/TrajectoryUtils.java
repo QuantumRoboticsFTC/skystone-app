@@ -7,8 +7,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 public class TrajectoryUtils {
     static final double STONE_L = 8.0;
     static final double STONE_W = 4.0;
-    static final double ROBOT_W = 17;
-    static final double ROBOT_L = 13.35;
+    static final double ROBOT_W = 18;
+    static final double ROBOT_L = 18;
     static final double PAD = 24.0;
     static final double BOTTOM_WALL = -3.0 * PAD;
     static final double INTAKE_L = 4.50;
@@ -19,6 +19,7 @@ public class TrajectoryUtils {
 
     public static final Pose2d START_POSE_STONES = new Pose2d(-33.0, -63.0, Math.toRadians(90.0));
     public static final Pose2d START_POSE_FOUNDATION = new Pose2d(33.0, -63.0, Math.toRadians(270.0));
+    public static final Pose2d START_POSE_SIDE = new Pose2d(-33.0, -63.0, Math.toRadians(90.0));
 
     public enum Alliance {
         RED,

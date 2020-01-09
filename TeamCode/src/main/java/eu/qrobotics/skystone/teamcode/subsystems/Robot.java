@@ -35,6 +35,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
     public Arm arm;
     public FoundationGrabber foundationGrabber;
     public RuletaDeCacatALuiTudor ruleta;
+    public SideArm sideArm;
 
     private List<Subsystem> subsystems;
     private List<Subsystem> subsystemsWithProblems;
@@ -137,6 +138,13 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         } catch (Exception e) {
             Log.w(TAG, "skipping RuletaDeCacatALuiTudor");
         }
+
+        try {
+            sideArm = new SideArm(opMode.hardwareMap, this, isAutonomous);
+            subsystems.add(sideArm);
+        } catch (Exception e) {
+            Log.w(TAG, "skipping Side Arm");
+        }
         //endregion
 
         // Initialize update thread
@@ -211,7 +219,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
 
     @Override
     public void onOpModePostStop(OpMode opMode) {
-
+        stop();
     }
     //endregion
 
