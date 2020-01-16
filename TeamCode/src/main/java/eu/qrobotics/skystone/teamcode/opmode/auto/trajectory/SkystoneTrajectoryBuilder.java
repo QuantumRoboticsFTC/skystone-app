@@ -111,7 +111,7 @@ public class SkystoneTrajectoryBuilder extends PublicTrajectoryBuilder {
 
     public SkystoneTrajectoryBuilder park() {
         return bridgeSafe()
-                .actualStrafeTo(new Vector2d(5, -36.0));
+                .actualStrafeTo(new Vector2d(5, -33.0));
     }
 
     public SkystoneTrajectoryBuilder actualSetReversed(boolean reversed) {

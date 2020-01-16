@@ -14,14 +14,11 @@ public class FixedStoneTracker extends OpenCvTracker {
     private double[] hslThresholdSaturation = {0.0, 255.0};
     private double[] hslThresholdLuminance = {0.0, 71};
     private Mat mask, hsl, result;
-    private double threshold;
     private Scalar count;
-    private StoneType stoneType;
 
-    public FixedStoneTracker(Point leftUp, Point rightDown, double threshold) {
+    public FixedStoneTracker(Point leftUp, Point rightDown) {
         pt1 = leftUp;
         pt2 = rightDown;
-        this.threshold = threshold;
     }
 
     @Override
@@ -49,10 +46,6 @@ public class FixedStoneTracker extends OpenCvTracker {
                 new Scalar(255, 0, 0), 4);
 
         return input;
-    }
-
-    public StoneType getStoneType() {
-        return stoneType;
     }
 
     public Scalar getCount() {

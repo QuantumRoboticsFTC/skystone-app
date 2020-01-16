@@ -307,6 +307,20 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         return wheelVelocities;
     }
 
+    public List<Integer> getEncoders() {
+        RevBulkData bulkData = robot.getRevBulkDataHub1();
+
+        if (bulkData == null) {
+            return Arrays.asList(0, 0, 0, 0);
+        }
+
+        List<Integer> wheelPositions = new ArrayList<>();
+        for (ExpansionHubMotor motor : motors) {
+            wheelPositions.add(bulkData.getMotorCurrentPosition(motor));
+        }
+        return wheelPositions;
+    }
+
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);
         return new PIDCoefficients(coefficients.p, coefficients.i, coefficients.d);

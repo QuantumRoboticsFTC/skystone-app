@@ -14,7 +14,6 @@ import eu.qrobotics.skystone.teamcode.subsystems.RuletaDeCacatALuiTudor.RuletaMo
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
 import static eu.qrobotics.skystone.teamcode.subsystems.Elevator.THRESHOLD;
-import static java.util.Arrays.asList;
 
 @TeleOp
 public class TeleOP extends OpMode {
@@ -29,6 +28,7 @@ public class TeleOP extends OpMode {
     StickyGamepad stickyGamepad1 = null;
     StickyGamepad stickyGamepad2 = null;
 
+    double elevatorDownStartTime = -100;
     double elevatorUpStartTime = -100;
     boolean elevatorToggle = true;
 
@@ -78,25 +78,38 @@ public class TeleOP extends OpMode {
                 driveMode = DriveMode.NORMAL;
         }
 
+        // Alex Radu
+        if(stickyGamepad1.left_bumper) {
+            driveMode = DriveMode.SLOW;
+        }
+        if(stickyGamepad1.right_bumper) {
+            driveMode = DriveMode.NORMAL;
+        }
+
         if (stickyGamepad2.x)
             robot.arm.gripperMode = Arm.GripperMode.OPEN;
         if (stickyGamepad2.y)
             robot.arm.gripperMode = Arm.GripperMode.CAPSTONE;
         if (stickyGamepad2.right_bumper) {
-            robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
-            robot.arm.armMode = Arm.ArmMode.OUTTAKE_HIGH;
-            elevatorToggle = false;
+            robot.arm.gripperMode = Arm.GripperMode.CLOSE;
+            elevatorUpStartTime = getRuntime();
         }
         if (stickyGamepad2.left_bumper) {
             robot.elevator.offsetPosition += 100;
             robot.arm.gripperMode = Arm.GripperMode.OPEN;
-            elevatorUpStartTime = getRuntime();
+            elevatorDownStartTime = getRuntime();
         }
 
-        if (0.3 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 0.4)
+        if (0.3 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 0.4) {
+            robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
+            robot.arm.armMode = Arm.ArmMode.OUTTAKE_HIGH;
+            elevatorToggle = false;
+        }
+
+        if (0.3 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.4)
             robot.arm.armMode = Arm.ArmMode.IDLE;
 
-        if (0.8 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 0.9)
+        if (0.8 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.9)
             robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
 
         if (gamepad2.left_stick_y < -0.1)
@@ -116,7 +129,7 @@ public class TeleOP extends OpMode {
         else
             robot.ruleta.ruletaMode = RuletaMode.IDLE;
 
-        if (stickyGamepad1.x) {
+        if (stickyGamepad1.x || stickyGamepad1.dpad_down) {
             if (robot.foundationGrabber.foundationGrabberMode == FoundationGrabberMode.UP)
                 robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.DOWN;
             else

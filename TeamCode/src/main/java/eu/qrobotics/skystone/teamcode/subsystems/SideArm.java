@@ -8,9 +8,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SideArm implements Subsystem {
 
     public enum PivotMode {
+        START,
         UP,
         MIDDLE,
-        DOWN
+        COLLECT,
+        PLACE_UP,
+        PLACE_DOWN
     }
 
     public enum ClawMode {
@@ -19,9 +22,12 @@ public class SideArm implements Subsystem {
         OPEN
     }
 
-    public static double PIVOT_UP = 0.015;
+    public static double PIVOT_START = 0.015;
+    public static double PIVOT_UP = 0.04;
     public static double PIVOT_MIDDLE = 0.115;
-    public static double PIVOT_DOWN = 0.4;
+    public static double PIVOT_COLLECT = 0.4;
+    public static double PIVOT_PLACE_UP = 0.3;
+    public static double PIVOT_PLACE_DOWN = 0.35;
 
     public static double CLAW_CLOSE = 0;
     public static double CLAW_STONE = 0.25;
@@ -41,7 +47,7 @@ public class SideArm implements Subsystem {
         pivotServo = hardwareMap.get(Servo.class, "sideArmPivot");
         clawServo = hardwareMap.get(Servo.class, "sideArmClaw");
 
-        pivotMode = PivotMode.UP;
+        pivotMode = PivotMode.START;
         if (isAutonomous)
             clawMode = ClawMode.OPEN;
         else
@@ -51,14 +57,23 @@ public class SideArm implements Subsystem {
     @Override
     public void update() {
         switch (pivotMode) {
+            case START:
+                pivotServo.setPosition(PIVOT_START);
+                break;
             case UP:
                 pivotServo.setPosition(PIVOT_UP);
                 break;
             case MIDDLE:
                 pivotServo.setPosition(PIVOT_MIDDLE);
                 break;
-            case DOWN:
-                pivotServo.setPosition(PIVOT_DOWN);
+            case COLLECT:
+                pivotServo.setPosition(PIVOT_COLLECT);
+                break;
+            case PLACE_UP:
+                pivotServo.setPosition(PIVOT_PLACE_UP);
+                break;
+            case PLACE_DOWN:
+                pivotServo.setPosition(PIVOT_PLACE_DOWN);
                 break;
         }
 

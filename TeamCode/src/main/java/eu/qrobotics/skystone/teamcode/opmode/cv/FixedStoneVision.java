@@ -2,18 +2,21 @@ package eu.qrobotics.skystone.teamcode.opmode.cv;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvTrackerApiPipeline;
 
+import java.util.Arrays;
+
 import eu.qrobotics.skystone.teamcode.cv.trackers.FixedStoneTracker;
 import eu.qrobotics.skystone.teamcode.cv.trackers.StoneType;
+import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator.SkystonePattern;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
 @Autonomous
@@ -38,6 +41,7 @@ public class FixedStoneVision extends LinearOpMode {
     private FixedStoneTracker leftStone, centerStone, rightStone;
     private StoneType stoneType;
     private StickyGamepad stickyGamepad1;
+    private SkystonePattern skystonePattern;
 
     @Override
     public void runOpMode()
@@ -46,16 +50,16 @@ public class FixedStoneVision extends LinearOpMode {
 
         leftStone = new FixedStoneTracker(
                 new Point(LEFT_STONE_UP_X, LEFT_STONE_UP_Y),
-                new Point(LEFT_STONE_DOWN_X, LEFT_STONE_DOWN_Y),
-                0.3);
+                new Point(LEFT_STONE_DOWN_X, LEFT_STONE_DOWN_Y)
+        );
         centerStone = new FixedStoneTracker(
                 new Point(CENTER_STONE_UP_X, CENTER_STONE_UP_Y),
-                new Point(CENTER_STONE_DOWN_X, CENTER_STONE_DOWN_Y),
-                0.3);
+                new Point(CENTER_STONE_DOWN_X, CENTER_STONE_DOWN_Y)
+        );
         rightStone = new FixedStoneTracker(
                 new Point(RIGHT_STONE_UP_X, RIGHT_STONE_UP_Y),
-                new Point(RIGHT_STONE_DOWN_X, RIGHT_STONE_DOWN_Y),
-                0.3);
+                new Point(RIGHT_STONE_DOWN_X, RIGHT_STONE_DOWN_Y)
+        );
 
         trackerApiPipeline = new OpenCvTrackerApiPipeline();
         trackerApiPipeline.addTracker(leftStone);
@@ -77,9 +81,31 @@ public class FixedStoneVision extends LinearOpMode {
             if (stickyGamepad1.b)
                 webcam.resumeViewport();
 
+            double[] counts = {average(leftStone.getCount()),
+                    average(centerStone.getCount()),
+                    average(rightStone.getCount())};
+
+            int maxIdx = 0;
+            double max = 0;
+            for (int i = 0; i < counts.length; i++) {
+                if(counts[i] > max) {
+                    max = counts[i];
+                    maxIdx = i;
+                }
+            }
+
+            if(maxIdx == 0) {
+                skystonePattern = SkystonePattern.LEFT;
+            } else if(maxIdx == 1) {
+                skystonePattern = SkystonePattern.MIDDLE;
+            } else {
+                skystonePattern = SkystonePattern.RIGHT;
+            }
+
             telemetry.addData("Stone Type Left", leftStone.getCount());
             telemetry.addData("Stone Type Center", centerStone.getCount());
             telemetry.addData("Stone Type Right", rightStone.getCount());
+            telemetry.addData("Skystone Pattern", skystonePattern);
             telemetry.addData("Runtime", getRuntime());
             telemetry.update();
         }
@@ -99,5 +125,11 @@ public class FixedStoneVision extends LinearOpMode {
 
             sleep(100);
         }
+    }
+
+    private double average(Scalar s) {
+        if(s == null || s.val == null)
+            return 0;
+        return Arrays.stream(s.val).average().orElse(0);
     }
 }

@@ -29,20 +29,20 @@ public class Elevator implements Subsystem {
     }
 
     public enum TargetHeight {
-        STONE_1(100),
-        STONE_2(300),
-        STONE_3(500),
-        STONE_4(700),
-        STONE_5(900),
-        STONE_6(1100),
-        STONE_7(1300),
-        STONE_8(1500),
-        STONE_9(1700),
-        STONE_10(1900),
-        STONE_11(2100),
-        STONE_12(2300),
-        STONE_13(2500),
-        STONE_14(2700);
+        STONE_1(110),
+        STONE_2(310),
+        STONE_3(510),
+        STONE_4(710),
+        STONE_5(910),
+        STONE_6(1110),
+        STONE_7(1310),
+        STONE_8(1510),
+        STONE_9(1710),
+        STONE_10(1910),
+        STONE_11(2110),
+        STONE_12(2310),
+        STONE_13(2510),
+        STONE_14(2710);
 
         private final int encoderPosition;
 
@@ -76,14 +76,19 @@ public class Elevator implements Subsystem {
         //motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        downPosisition = motorRight.getCurrentPosition();
+        downPosisition = getRawEncoder();
 
         elevatorMode = ElevatorMode.DISABLED;
         targetPosition = TargetHeight.STONE_1;
     }
 
+    public int getRawEncoder() {
+        return -motorRight.getCurrentPosition(); // left
+        //return motorRight.getCurrentPosition(); // right
+    }
+
     public int getEncoder() {
-        lastEncoder = motorRight.getCurrentPosition() - downPosisition;
+        lastEncoder = getRawEncoder() - downPosisition;
         return lastEncoder;
     }
 
@@ -111,7 +116,7 @@ public class Elevator implements Subsystem {
 
         if (elevatorMode == ElevatorMode.DOWN) {
             offsetPosition = 0;
-            if (Math.abs(getEncoder()) <= THRESHOLD_DOWN)
+            if (getEncoder() <= THRESHOLD_DOWN)
                 setPower(0);
             else
                 setPower(DOWN_POWER);

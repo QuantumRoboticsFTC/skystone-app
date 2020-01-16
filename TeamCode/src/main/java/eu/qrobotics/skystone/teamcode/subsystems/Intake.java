@@ -61,7 +61,7 @@ public class Intake implements Subsystem {
                 }
                 else {
                     intakeMode = IntakeMode.IDLE;
-                    robot.arm.gripperMode = GripperMode.CLOSE;
+                    robot.arm.armMode = ArmMode.INTAKE;
                 }
                 break;
             case IDLE:
