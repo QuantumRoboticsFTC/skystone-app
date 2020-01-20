@@ -22,12 +22,10 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,8 +73,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     private Robot robot;
     private boolean isAutonomous;
 
-    private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
-    private List<ExpansionHubMotor> motors;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
     private double[] motorPowers;
@@ -93,8 +91,6 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
         // Initialize autonomous specific stuff
         if (isAutonomous) {
-            robot.setIsHub1Required(true);
-
             turnController = new PIDFController(HEADING_PID);
             turnController.setInputBounds(0, 2 * Math.PI);
 
@@ -108,17 +104,17 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         } else
             motorPowers = new double[]{0.0, 0.0, 0.0, 0.0};
 
-        leftFront = hardwareMap.get(ExpansionHubMotor.class, "leftFront");
-        leftRear = hardwareMap.get(ExpansionHubMotor.class, "leftRear");
-        rightRear = hardwareMap.get(ExpansionHubMotor.class, "rightRear");
-        rightFront = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
-        for (ExpansionHubMotor motor : motors) {
+        for (DcMotorEx motor : motors) {
             if (RUN_USING_ENCODER) {
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -280,43 +276,25 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        RevBulkData bulkData = robot.getRevBulkDataHub1();
-
-        if (bulkData == null) {
-            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
-        }
-
         List<Double> wheelPositions = new ArrayList<>();
-        for (ExpansionHubMotor motor : motors) {
-            wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
+        for (DcMotorEx motor : motors) {
+            wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }
         return wheelPositions;
     }
 
     public List<Double> getWheelVelocities() {
-        RevBulkData bulkData = robot.getRevBulkDataHub1();
-
-        if (bulkData == null) {
-            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
-        }
-
         List<Double> wheelVelocities = new ArrayList<>();
-        for (ExpansionHubMotor motor : motors) {
-            wheelVelocities.add(encoderTicksToInches(bulkData.getMotorVelocity(motor)));
+        for (DcMotorEx motor : motors) {
+            wheelVelocities.add(encoderTicksToInches(motor.getVelocity()));
         }
         return wheelVelocities;
     }
 
     public List<Integer> getEncoders() {
-        RevBulkData bulkData = robot.getRevBulkDataHub1();
-
-        if (bulkData == null) {
-            return Arrays.asList(0, 0, 0, 0);
-        }
-
         List<Integer> wheelPositions = new ArrayList<>();
-        for (ExpansionHubMotor motor : motors) {
-            wheelPositions.add(bulkData.getMotorCurrentPosition(motor));
+        for (DcMotor motor : motors) {
+            wheelPositions.add(motor.getCurrentPosition());
         }
         return wheelPositions;
     }
@@ -327,7 +305,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     }
 
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
-        for (ExpansionHubMotor motor : motors) {
+        for (DcMotorEx motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
                     coefficients.kP, coefficients.kI, coefficients.kD, getMotorVelocityF()
             ));

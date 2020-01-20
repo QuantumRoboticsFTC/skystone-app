@@ -2,9 +2,8 @@ package eu.qrobotics.skystone.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.openftc.revextensions2.ExpansionHubMotor;
 
 @Config
 public class Elevator implements Subsystem {
@@ -62,14 +61,14 @@ public class Elevator implements Subsystem {
     public double manualPower;
 
     public ElevatorMode elevatorMode;
-    private ExpansionHubMotor motorLeft, motorRight;
+    private DcMotorEx motorLeft, motorRight;
     private Robot robot;
 
     Elevator(HardwareMap hardwareMap, Robot robot, boolean isAutonomous) {
         this.robot = robot;
 
-        motorLeft = hardwareMap.get(ExpansionHubMotor.class, "elevatorLeft");
-        motorRight = hardwareMap.get(ExpansionHubMotor.class, "elevatorRight");
+        motorLeft = hardwareMap.get(DcMotorEx.class, "elevatorLeft");
+        motorRight = hardwareMap.get(DcMotorEx.class, "elevatorRight");
 
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
 

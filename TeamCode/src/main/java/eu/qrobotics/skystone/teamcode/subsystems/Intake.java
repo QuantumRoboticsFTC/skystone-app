@@ -2,13 +2,11 @@ package eu.qrobotics.skystone.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.openftc.revextensions2.ExpansionHubMotor;
-
 import eu.qrobotics.skystone.teamcode.subsystems.Arm.ArmMode;
-import eu.qrobotics.skystone.teamcode.subsystems.Arm.GripperMode;
 
 @Config
 public class Intake implements Subsystem {
@@ -27,7 +25,7 @@ public class Intake implements Subsystem {
     public static double INTAKE_OUT_SLOW_SPEED = -0.4;
 
     public IntakeMode intakeMode;
-    private ExpansionHubMotor leftIntake, rightIntake;
+    private DcMotorEx leftIntake, rightIntake;
     private DigitalChannel intakeButton;
     private Robot robot;
     private boolean isAutonomous;
@@ -36,8 +34,8 @@ public class Intake implements Subsystem {
         this.robot = robot;
         this.isAutonomous = isAutonomous;
 
-        leftIntake = hardwareMap.get(ExpansionHubMotor.class, "intakeLeft");
-        rightIntake = hardwareMap.get(ExpansionHubMotor.class, "intakeRight");
+        leftIntake = hardwareMap.get(DcMotorEx.class, "intakeLeft");
+        rightIntake = hardwareMap.get(DcMotorEx.class, "intakeRight");
 
         intakeButton = hardwareMap.get(DigitalChannel.class, "intakeButton");
 
@@ -46,8 +44,6 @@ public class Intake implements Subsystem {
     }
 
     private boolean checkSwitch() {
-        if(isAutonomous)
-            return robot.getRevBulkDataHub1().getDigitalInputState(intakeButton);
         return intakeButton.getState();
     }
 

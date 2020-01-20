@@ -4,15 +4,13 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
 import com.qualcomm.robotcore.util.GlobalWarningSource;
 import com.qualcomm.robotcore.util.MovingStatistics;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.util.ThreadPool;
-
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.RevBulkData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +20,8 @@ import java.util.concurrent.ExecutorService;
 public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarningSource {
     public static final String TAG = "Robot";
 
-    private ExpansionHubEx hub1;
-    private ExpansionHubEx hub2;
-    private RevBulkData revBulkData1;
-    private RevBulkData revBulkData2;
-    private boolean isHub1Required = false;
-    private boolean isHub2Required = false;
+    private LynxModule hub1;
+    private LynxModule hub2;
 
     public Drivetrain drive;
     public Intake intake;
@@ -54,9 +48,6 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 startTime = getCurrentTime(); // Get start time of update
-                updateBulkData();
-                revBulkData1 = hub1.getBulkInputData(); // Get data from hubs
-                revBulkData2 = hub2.getBulkInputData();
                 for (Subsystem subsystem : subsystems) { // Update all subsystems
                     if (subsystem == null) continue;
                     try {
@@ -88,11 +79,11 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
-        hub1 = opMode.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
-        hub2 = opMode.hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
+        hub1 = opMode.hardwareMap.get(LynxModule.class, "Expansion Hub 1");
+        hub2 = opMode.hardwareMap.get(LynxModule.class, "Expansion Hub 2");
 
-        revBulkData1 = hub1.getBulkInputData();
-        revBulkData2 = hub2.getBulkInputData();
+        hub1.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        hub2.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
 
         //region Initialize subsystems
         subsystems = new ArrayList<>();
@@ -164,37 +155,6 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
             subsystemUpdateExecutor.shutdownNow();
             subsystemUpdateExecutor = null;
         }
-    }
-
-    public void setIsHub1Required(boolean value) {
-        isHub1Required = value;
-    }
-
-    public void setIsHub2Required(boolean value) {
-        isHub2Required = value;
-    }
-
-    public ExpansionHubEx getHub1() {
-        return hub1;
-    }
-
-    public ExpansionHubEx getHub2() {
-        return hub2;
-    }
-
-    public RevBulkData getRevBulkDataHub1() {
-        return revBulkData1;
-    }
-
-    public RevBulkData getRevBulkDataHub2() {
-        return revBulkData2;
-    }
-
-    private void updateBulkData() {
-        if (isHub1Required)
-            revBulkData1 = hub1.getBulkInputData();
-        if (isHub2Required)
-            revBulkData2 = hub2.getBulkInputData();
     }
 
     public void sleep(double seconds) {
