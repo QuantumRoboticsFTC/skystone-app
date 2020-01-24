@@ -50,11 +50,11 @@ public class Elevator implements Subsystem {
         }
 
         public int getEncoderPosition() {
-            return encoderPosition;
+            return (int)(encoderPosition * 145.6 / 383.6); // for 5:1 motor
         }
     }
 
-    private int downPosisition;
+    private int downPosition;
     private int lastEncoder;
     public double offsetPosition;
     private TargetHeight targetPosition;
@@ -71,23 +71,25 @@ public class Elevator implements Subsystem {
         motorRight = hardwareMap.get(DcMotorEx.class, "elevatorRight");
 
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.REVERSE); // Turns in wrong direction
 
         //motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        downPosisition = getRawEncoder();
+        downPosition = getRawEncoder();
 
         elevatorMode = ElevatorMode.DISABLED;
         targetPosition = TargetHeight.STONE_1;
     }
 
     public int getRawEncoder() {
-        return -motorRight.getCurrentPosition(); // left
-        //return motorRight.getCurrentPosition(); // right
+        //return -motorRight.getCurrentPosition(); // left
+        // Right motor turns in wrong direction
+        return -motorRight.getCurrentPosition(); // right
     }
 
     public int getEncoder() {
-        lastEncoder = getRawEncoder() - downPosisition;
+        lastEncoder = getRawEncoder() - downPosition;
         return lastEncoder;
     }
 

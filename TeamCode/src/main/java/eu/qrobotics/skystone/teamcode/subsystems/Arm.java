@@ -14,8 +14,8 @@ public class Arm implements Subsystem {
         CAPSTONE
     }
 
-    public static double GRIPPER_CLOSE_POSITION = 0.915;
-    public static double GRIPPER_OPEN_POSITION = 0.45;
+    public static double GRIPPER_CLOSE_POSITION = 1; //0.915;
+    public static double GRIPPER_OPEN_POSITION = 0; // 0.45;
     public static double GRIPPER_CAPSTONE_POSITION = 0.25;
 
     public enum ArmMode {

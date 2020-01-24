@@ -35,6 +35,7 @@ public class TeleOP extends OpMode {
     @Override
     public void init() {
         robot = new Robot(this, false);
+        robot.drive.fieldCentric = true;
         stickyGamepad1 = new StickyGamepad(gamepad1);
         stickyGamepad2 = new StickyGamepad(gamepad2);
         driveMode = DriveMode.NORMAL;
@@ -100,7 +101,7 @@ public class TeleOP extends OpMode {
             elevatorDownStartTime = getRuntime();
         }
 
-        if (0.3 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 0.4) {
+        if (1 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 1.1) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
             robot.arm.armMode = Arm.ArmMode.OUTTAKE_HIGH;
             elevatorToggle = false;

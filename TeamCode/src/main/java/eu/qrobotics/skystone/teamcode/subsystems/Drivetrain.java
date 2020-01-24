@@ -79,6 +79,9 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
     private double[] motorPowers;
 
+    private static Pose2d autonomousEndPose = new Pose2d(0,0,0);
+    public boolean fieldCentric = false;
+
     Drivetrain(HardwareMap hardwareMap, Robot robot, boolean isAutonomous) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -96,13 +99,13 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
             constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
             follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
-
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-            imu.initialize(parameters);
         } else
             motorPowers = new double[]{0.0, 0.0, 0.0, 0.0};
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -167,8 +170,12 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     }
 
     public void setMotorPowersFromGamepad(Gamepad gg, double scale) {
-        MecanumUtil.Wheels wh = MecanumUtil.motionToWheels(MecanumUtil.joystickToMotion(gg.left_stick_x, gg.left_stick_y,
-                gg.right_stick_x, gg.right_stick_y)).scaleWheelPower(scale);
+        MecanumUtil.Motion motion = MecanumUtil.joystickToMotion(gg.left_stick_x, gg.left_stick_y,
+                gg.right_stick_x, gg.right_stick_y);
+        if(fieldCentric) {
+            motion = motion.toFieldCentricMotion(autonomousEndPose.getHeading() + imu.getAngularOrientation().firstAngle);
+        }
+        MecanumUtil.Wheels wh = MecanumUtil.motionToWheels(motion).scaleWheelPower(scale);
         motorPowers[0] = wh.frontLeft;
         motorPowers[1] = wh.backLeft;
         motorPowers[2] = wh.backRight;
@@ -190,6 +197,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
+        autonomousEndPose = currentPose;
 
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();

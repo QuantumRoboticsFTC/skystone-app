@@ -40,6 +40,16 @@ public class MecanumUtil {
             this.thetaD = thetaD;
             this.vTheta = vTheta;
         }
+
+        /**
+         * Transforms a robot centric motion to a field centric motion.
+         *
+         * @param robotTheta The angle of the robot.
+         * @return The Mecanum motion vector.
+         */
+        public Motion toFieldCentricMotion(double robotTheta) {
+            return new Motion(vD, thetaD - robotTheta, vTheta);
+        }
     }
 
     /**
