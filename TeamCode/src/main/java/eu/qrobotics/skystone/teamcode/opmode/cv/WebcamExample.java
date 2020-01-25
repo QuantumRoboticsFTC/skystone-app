@@ -16,13 +16,11 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp
 @Disabled
-public class WebcamExample extends LinearOpMode
-{
+public class WebcamExample extends LinearOpMode {
     OpenCvCamera webcam;
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
          * In this sample, we're using a webcam. Note that you will need to
@@ -76,8 +74,7 @@ public class WebcamExample extends LinearOpMode
          */
         waitForStart();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             /*
              * Send some stats to the telemetry
              */
@@ -94,8 +91,7 @@ public class WebcamExample extends LinearOpMode
              * when it will be automatically stopped for you) *IS* supported. The "if" statement
              * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
              */
-            if(gamepad1.a)
-            {
+            if (gamepad1.a) {
                 /*
                  * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
                  * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
@@ -131,12 +127,9 @@ public class WebcamExample extends LinearOpMode
              * The "if" statements below will pause the viewport if the "X" button on gamepad1 is pressed,
              * and resume the viewport if the "Y" button on gamepad1 is pressed.
              */
-            else if(gamepad1.x)
-            {
+            else if (gamepad1.x) {
                 webcam.pauseViewport();
-            }
-            else if(gamepad1.y)
-            {
+            } else if (gamepad1.y) {
                 webcam.resumeViewport();
             }
 
@@ -164,8 +157,7 @@ public class WebcamExample extends LinearOpMode
      * if you're doing something weird where you do need it synchronized with your OpMode thread,
      * then you will need to account for that accordingly.
      */
-    class SamplePipeline extends OpenCvPipeline
-    {
+    class SamplePipeline extends OpenCvPipeline {
         /*
          * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
          * highly recommended to declare them here as instance variables and re-use them for
@@ -176,8 +168,7 @@ public class WebcamExample extends LinearOpMode
          */
 
         @Override
-        public Mat processFrame(Mat input)
-        {
+        public Mat processFrame(Mat input) {
             /*
              * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
              * will only dereference to the same image for the duration of this particular
@@ -192,11 +183,11 @@ public class WebcamExample extends LinearOpMode
             Imgproc.rectangle(
                     input,
                     new Point(
-                            input.cols()/4,
-                            input.rows()/4),
+                            input.cols() / 4,
+                            input.rows() / 4),
                     new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/4f)),
+                            input.cols() * (3f / 4f),
+                            input.rows() * (3f / 4f)),
                     new Scalar(0, 255, 0), 4);
 
             /**

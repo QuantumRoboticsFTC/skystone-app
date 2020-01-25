@@ -2,16 +2,13 @@ package eu.qrobotics.skystone.teamcode.opmode.tests;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import eu.qrobotics.skystone.teamcode.subsystems.Arm;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
-import eu.qrobotics.skystone.teamcode.subsystems.SideArm;
 import eu.qrobotics.skystone.teamcode.subsystems.SideArm.PivotMode;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
-import static eu.qrobotics.skystone.teamcode.subsystems.SideArm.*;
+import static eu.qrobotics.skystone.teamcode.subsystems.SideArm.ClawMode;
 
 @TeleOp(group = "Test")
 @Config
@@ -33,7 +30,7 @@ public class SideArmTest extends LinearOpMode {
         robot.start();
         robot.sleep(1);
 
-        while(!isStopRequested() && opModeIsActive()) {
+        while (!isStopRequested() && opModeIsActive()) {
             gamepad.update();
 
             robot.sideArm.pivotMode = PivotMode.COLLECT;

@@ -78,17 +78,16 @@ public class SkystoneTrajectoryBuilder extends PublicTrajectoryBuilder {
     }
 
 
-
     public SkystoneTrajectoryBuilder bridgeSafe() {
-        if(currentPose.getX() > 0)
+        if (currentPose.getX() > 0)
             return bridgeSafeUp();
-        if(currentPose.getX() < 0)
+        if (currentPose.getX() < 0)
             return bridgeSafeDown();
         return actualStrafeTo(new Vector2d(0, -36.0));
     }
 
     public SkystoneTrajectoryBuilder passBridge() {
-        if(currentPose.getX() > 0)
+        if (currentPose.getX() > 0)
             return bridgeSafe().bridgeSafeDown();
         return bridgeSafe().bridgeSafeUp();
     }
@@ -193,6 +192,6 @@ public class SkystoneTrajectoryBuilder extends PublicTrajectoryBuilder {
     }
 
     private Pose2d div(Pose2d a, double scalar) {
-        return mult(a, 1/scalar);
+        return mult(a, 1 / scalar);
     }
 }

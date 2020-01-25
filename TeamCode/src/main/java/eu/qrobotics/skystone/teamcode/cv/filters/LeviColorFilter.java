@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LeviColorFilter {
     // Color presets
-    public enum ColorPreset{
+    public enum ColorPreset {
         RED,
         BLUE,
         YELLOW,
@@ -27,73 +27,77 @@ public class LeviColorFilter {
 
     /**
      * Constructor
+     *
      * @param filterColor - Color Preset to use (RED,BLUE,YELLOW,WHITE)
      */
-    public LeviColorFilter(ColorPreset filterColor){
+    public LeviColorFilter(ColorPreset filterColor) {
         updateSettings(filterColor, -1);
     }
+
     /**
      * Constructor
-     * @param filterColor - Color Preset to use (RED,BLUE,YELLOW,WHITE)
+     *
+     * @param filterColor     - Color Preset to use (RED,BLUE,YELLOW,WHITE)
      * @param filterThreshold - Threshold value
      */
-    public LeviColorFilter(ColorPreset filterColor, double filterThreshold){
+    public LeviColorFilter(ColorPreset filterColor, double filterThreshold) {
         updateSettings(filterColor, filterThreshold);
     }
 
-    private void updateSettings(ColorPreset filterColor, double filterThreshold){
+    private void updateSettings(ColorPreset filterColor, double filterThreshold) {
         color = filterColor;
         threshold = filterThreshold;
     }
 
     /**
      * Process a image and return a mask
+     *
      * @param input - Input image to process
-     * @param mask - Output mask
+     * @param mask  - Output mask
      */
     public void process(Mat input, Mat mask) {
         channels = new ArrayList<>();
 
-        switch(color){
+        switch (color) {
             case RED:
-                if(threshold == -1){
+                if (threshold == -1) {
                     threshold = 164;
                 }
 
                 Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
-                Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+                Imgproc.GaussianBlur(input, input, new Size(3, 3), 0);
                 Core.split(input, channels);
                 Imgproc.threshold(channels.get(1), mask, threshold, 255, Imgproc.THRESH_BINARY);
                 break;
             case BLUE:
-                if(threshold == -1){
+                if (threshold == -1) {
                     threshold = 145;
                 }
 
                 Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
-                Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+                Imgproc.GaussianBlur(input, input, new Size(3, 3), 0);
                 Core.split(input, channels);
                 Imgproc.threshold(channels.get(1), mask, threshold, 255, Imgproc.THRESH_BINARY);
                 break;
             case WHITE:
-                if(threshold == -1) {
+                if (threshold == -1) {
                     threshold = 150;
                 }
 
                 Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
-                Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+                Imgproc.GaussianBlur(input, input, new Size(3, 3), 0);
                 Core.split(input, channels);
                 Core.inRange(channels.get(0), new Scalar(threshold, 150, 40), new Scalar(255, 150, 150), mask);
                 break;
             case YELLOW:
-                if(threshold == -1){
+                if (threshold == -1) {
                     threshold = 70;
                 }
 
                 Mat lab = new Mat(input.size(), 0);
                 Imgproc.cvtColor(input, lab, Imgproc.COLOR_RGB2Lab);
                 Mat temp = new Mat();
-                Core.inRange(input, new Scalar(0,0,0), new Scalar(255,255,164), temp);
+                Core.inRange(input, new Scalar(0, 0, 0), new Scalar(255, 255, 164), temp);
                 Mat mask2 = new Mat(input.size(), 0);
                 temp.copyTo(mask2);
                 input.copyTo(input, mask2);
@@ -102,16 +106,16 @@ public class LeviColorFilter {
                 lab.release();
 
                 Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
-                Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+                Imgproc.GaussianBlur(input, input, new Size(3, 3), 0);
                 Core.split(input, channels);
-                if(channels.size() > 0){
+                if (channels.size() > 0) {
                     Imgproc.threshold(channels.get(1), mask, threshold, 255, Imgproc.THRESH_BINARY_INV);
                 }
 
                 break;
         }
 
-        for(int i=0;i<channels.size();i++){
+        for (int i = 0; i < channels.size(); i++) {
             channels.get(i).release();
         }
 

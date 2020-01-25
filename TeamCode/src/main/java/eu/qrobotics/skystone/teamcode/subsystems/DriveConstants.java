@@ -22,8 +22,8 @@ public class DriveConstants {
     public static double kStatic = 0.07;
 
     public static double getTicksPerRev() {
-            return 753.2;
-        }
+        return 753.2;
+    }
 
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
             35.0, 30.0, 0.0,

@@ -79,7 +79,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
     private double[] motorPowers;
 
-    private static Pose2d autonomousEndPose = new Pose2d(0,0,0);
+    private static Pose2d autonomousEndPose = new Pose2d(0, 0, 0);
     public boolean fieldCentric = false;
 
     Drivetrain(HardwareMap hardwareMap, Robot robot, boolean isAutonomous) {
@@ -172,7 +172,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     public void setMotorPowersFromGamepad(Gamepad gg, double scale) {
         MecanumUtil.Motion motion = MecanumUtil.joystickToMotion(gg.left_stick_x, gg.left_stick_y,
                 gg.right_stick_x, gg.right_stick_y);
-        if(fieldCentric) {
+        if (fieldCentric) {
             motion = motion.toFieldCentricMotion(autonomousEndPose.getHeading() + imu.getAngularOrientation().firstAngle);
         }
         MecanumUtil.Wheels wh = MecanumUtil.motionToWheels(motion).scaleWheelPower(scale);

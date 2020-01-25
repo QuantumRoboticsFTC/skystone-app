@@ -39,7 +39,7 @@ public class Arm implements Subsystem {
 
     public GripperMode gripperMode;
     public ArmMode armMode;
-    
+
     private Servo leftArmServo, rightArmServo, gripperServo;
     private Robot robot;
 
@@ -55,7 +55,7 @@ public class Arm implements Subsystem {
 
     @Override
     public void update() {
-        if(IS_DISABLED)
+        if (IS_DISABLED)
             return;
 
         switch (gripperMode) {

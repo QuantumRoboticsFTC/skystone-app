@@ -15,7 +15,6 @@ import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUt
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.STONE_L;
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.STONE_W;
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.STONE_Y;
-import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.flipIfBlue;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.BASE_CONSTRAINTS;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.SLOW_CONSTRAINTS;
 
@@ -96,7 +95,7 @@ public class AutoTrajectoryGenerator {
         } else if (skystonePattern == SkystonePattern.MIDDLE) {
             firstSkystone = 4;
             secondSkystone = 1;
-        } else  {
+        } else {
             firstSkystone = 5;
             secondSkystone = 2;
         }
@@ -150,7 +149,7 @@ public class AutoTrajectoryGenerator {
         Pose2d firstSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[0] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 3.5 + 1 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 2.5, Math.toRadians(180));
         Pose2d secondSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[1] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 3.5 + 4 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 1.5, Math.toRadians(180));
 
-        if(skystonePattern == SkystonePattern.LEFT && alliance == Alliance.RED) {
+        if (skystonePattern == SkystonePattern.LEFT && alliance == Alliance.RED) {
             trajectories.add(makeTrajectoryBuilder()
                     .actualSetReversed(false)
                     .actualStrafeTo(new Vector2d(-36.0, -63.0))
@@ -169,7 +168,7 @@ public class AutoTrajectoryGenerator {
                 .actualSplineTo(new Pose2d(49.5, -31.0 - 4.25 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
                 .build());
 
-        if(skystonePattern == SkystonePattern.RIGHT) {
+        if (skystonePattern == SkystonePattern.RIGHT) {
             trajectories.add(makeTrajectoryBuilder()
                     .actualSetReversed(false)
                     .actualSplineTo(new Pose2d(5, -31.0 - 2 - 7.5, Math.toRadians(180)))

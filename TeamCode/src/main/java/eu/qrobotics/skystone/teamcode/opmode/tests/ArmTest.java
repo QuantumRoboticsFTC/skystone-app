@@ -28,10 +28,10 @@ public class ArmTest extends OpMode {
     public void loop() {
         gamepad.update();
 
-        if(gamepad.b)
+        if (gamepad.b)
             robot.arm.armMode = Arm.ArmMode.OUTTAKE_LOW;
 
-        if(gamepad.x) {
+        if (gamepad.x) {
             if (robot.arm.gripperMode == Arm.GripperMode.OPEN)
                 robot.arm.gripperMode = Arm.GripperMode.CLOSE;
             else

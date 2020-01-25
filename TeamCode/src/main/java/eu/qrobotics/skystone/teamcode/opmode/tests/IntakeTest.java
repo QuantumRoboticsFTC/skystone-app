@@ -25,7 +25,7 @@ public class IntakeTest extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad1.a)
+        if (gamepad1.a)
             robot.intake.intakeMode = Intake.IntakeMode.IN;
 
         telemetry.addData("INTAKE MODE", robot.intake.intakeMode);

@@ -41,9 +41,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator;
 import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator.SkystonePattern;
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils;
 import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
 import kotlin.Pair;
 
@@ -109,6 +107,7 @@ public class StoneDetector {
 
     private List<Double> averageArray = new ArrayList<>();
     private List<Recognition> recognitions = new ArrayList<>();
+
     public void update() {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since

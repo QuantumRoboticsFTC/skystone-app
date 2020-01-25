@@ -21,7 +21,6 @@ import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGener
 import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator.SkystonePattern;
 import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils;
 import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
-import eu.qrobotics.skystone.teamcode.cv.StoneDetector;
 import eu.qrobotics.skystone.teamcode.subsystems.Arm.ArmMode;
 import eu.qrobotics.skystone.teamcode.subsystems.Arm.GripperMode;
 import eu.qrobotics.skystone.teamcode.subsystems.DriveConstants;
@@ -29,7 +28,6 @@ import eu.qrobotics.skystone.teamcode.subsystems.Elevator.ElevatorMode;
 import eu.qrobotics.skystone.teamcode.subsystems.FoundationGrabber.FoundationGrabberMode;
 import eu.qrobotics.skystone.teamcode.subsystems.Intake.IntakeMode;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
-import kotlin.Pair;
 
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.flipIfBlue;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
@@ -46,8 +44,8 @@ public abstract class OneStoneAuto extends LinearOpMode {
     private static final String VUFORIA_KEY =
             "AeS98kj/////AAABmXdQauRe0EckiIHBShZZ7Zwq2addwm/e1hNj2f5q5ApkyqGI7LhjE/c37puxUeyyCluEik9kbr+hEVPPL3iGlKbOaAy+6UmjaM7zXtsXEyoPjT9KdbAPlVbSbZ/FRUuQHa+fUCiNLOmTyD5EURAtR+hGV2q+IUvTt9jAeITP9NbhX0HWBa5l6DEp1noOvvug8VElcVjriGr6eiSdprFh7tPsPki+MO4oz8uveRCq5coebi3ET4BfRjYnmjx4xyaRlkh+P0xwpvNRkXuwH+lXjT1eyat+MywP2DEQBzjT+DZ7EncIT1qhQVKHfydX0ECTpR6jJsT70x6z8/Wg3V13UTug/bqVfloGMUEsILRbGJd5";
 
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     private static final float stoneZ = 2.00f * mmPerInch;
 
@@ -97,13 +95,13 @@ public abstract class OneStoneAuto extends LinearOpMode {
 
         while (!isStarted() && !isStopRequested()) {
             targetVisible = false;
-            if (((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible()) {
+            if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                 telemetry.addData("Visible Target", stoneTarget.getName());
                 targetVisible = true;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).getFtcCameraFromTarget();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getFtcCameraFromTarget();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
@@ -114,12 +112,11 @@ public abstract class OneStoneAuto extends LinearOpMode {
                 telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                         translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                 double position = translation.get(0) / mmPerInch;
-                if(0 < position)
+                if (0 < position)
                     skystonePattern = SkystonePattern.MIDDLE;
                 else
                     skystonePattern = getAlliance() == Alliance.RED ? SkystonePattern.LEFT : SkystonePattern.RIGHT;
-            }
-            else
+            } else
                 skystonePattern = getAlliance() == Alliance.RED ? SkystonePattern.RIGHT : SkystonePattern.LEFT;
 
             telemetry.addData("Skystone", skystonePattern);
@@ -132,41 +129,40 @@ public abstract class OneStoneAuto extends LinearOpMode {
 
         robot.drive.followTrajectorySync(
                 new TrajectoryBuilder(flipIfBlue(getAlliance(), STARTING_POSE), DriveConstants.SLOW_CONSTRAINTS)
-                .forward(17)
-                .build());
+                        .forward(17)
+                        .build());
 
         double time = getRuntime();
         skystonePattern = getAlliance() == Alliance.RED ? SkystonePattern.RIGHT : SkystonePattern.LEFT;
 
-        while(getRuntime() - time < 0.5) {
-                targetVisible = false;
-                if (((VuforiaTrackableDefaultListener)stoneTarget.getListener()).isVisible()) {
-                    telemetry.addData("Visible Target", stoneTarget.getName());
-                    targetVisible = true;
+        while (getRuntime() - time < 0.5) {
+            targetVisible = false;
+            if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+                telemetry.addData("Visible Target", stoneTarget.getName());
+                targetVisible = true;
 
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
-                    OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)stoneTarget.getListener()).getFtcCameraFromTarget();
-                    if (robotLocationTransform != null) {
-                        lastLocation = robotLocationTransform;
-                    }
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).getFtcCameraFromTarget();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
                 }
-                if (targetVisible) {
-                    // express position (translation) of robot in inches.
-                    VectorF translation = lastLocation.getTranslation();
-                    telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+            }
+            if (targetVisible) {
+                // express position (translation) of robot in inches.
+                VectorF translation = lastLocation.getTranslation();
+                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                    double position = translation.get(0) / mmPerInch;
-                    if (0 < position)
-                        skystonePattern = getAlliance() == TrajectoryUtils.Alliance.RED ? AutoTrajectoryGenerator.SkystonePattern.LEFT : AutoTrajectoryGenerator.SkystonePattern.RIGHT;
-                    else
-                        skystonePattern = AutoTrajectoryGenerator.SkystonePattern.MIDDLE;
-                }
-                else {
-                    telemetry.addData("Visible Target", "none");
-                }
-                telemetry.update();
+                double position = translation.get(0) / mmPerInch;
+                if (0 < position)
+                    skystonePattern = getAlliance() == TrajectoryUtils.Alliance.RED ? AutoTrajectoryGenerator.SkystonePattern.LEFT : AutoTrajectoryGenerator.SkystonePattern.RIGHT;
+                else
+                    skystonePattern = AutoTrajectoryGenerator.SkystonePattern.MIDDLE;
+            } else {
+                telemetry.addData("Visible Target", "none");
+            }
+            telemetry.update();
         }
 
         robot.drive.followTrajectorySync(new TrajectoryBuilder(robot.drive.getPoseEstimate(), DriveConstants.SLOW_CONSTRAINTS).back(17).build());

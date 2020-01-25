@@ -50,7 +50,7 @@ public class Elevator implements Subsystem {
         }
 
         public int getEncoderPosition() {
-            return (int)(encoderPosition * 145.6 / 383.6); // for 5:1 motor
+            return (int) (encoderPosition * 145.6 / 383.6); // for 5:1 motor
         }
     }
 
@@ -98,7 +98,7 @@ public class Elevator implements Subsystem {
     }
 
     public int getDistanceLeft() {
-        return targetPosition.getEncoderPosition() - lastEncoder + (int)offsetPosition;
+        return targetPosition.getEncoderPosition() - lastEncoder + (int) offsetPosition;
     }
 
     public TargetHeight getTargetPosition() {
@@ -122,7 +122,7 @@ public class Elevator implements Subsystem {
             else
                 setPower(DOWN_POWER);
         } else if (elevatorMode == ElevatorMode.UP) {
-            int distanceLeft = targetPosition.getEncoderPosition() - getEncoder() + (int)offsetPosition;
+            int distanceLeft = targetPosition.getEncoderPosition() - getEncoder() + (int) offsetPosition;
             if (Math.abs(distanceLeft) <= THRESHOLD)
                 setPower(HOLD_POWER);
             else if (Math.abs(distanceLeft) <= THRESHOLD_LEVEL_1)

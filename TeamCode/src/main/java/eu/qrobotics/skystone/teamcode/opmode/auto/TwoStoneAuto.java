@@ -88,15 +88,15 @@ public abstract class TwoStoneAuto extends LinearOpMode {
             int maxIdx = 0;
             double max = 0;
             for (int i = 0; i < counts.length; i++) {
-                if(counts[i] > max) {
+                if (counts[i] > max) {
                     max = counts[i];
                     maxIdx = i;
                 }
             }
 
-            if(maxIdx == 0) {
+            if (maxIdx == 0) {
                 skystonePattern = SkystonePattern.LEFT;
-            } else if(maxIdx == 1) {
+            } else if (maxIdx == 1) {
                 skystonePattern = SkystonePattern.MIDDLE;
             } else {
                 skystonePattern = SkystonePattern.RIGHT;
@@ -108,13 +108,13 @@ public abstract class TwoStoneAuto extends LinearOpMode {
 
         webcam.stopStreaming();
 
-        if(isStopRequested())
+        if (isStopRequested())
             return;
 
-        if(getAlliance() == TrajectoryUtils.Alliance.BLUE) {
-            if(skystonePattern == SkystonePattern.LEFT)
+        if (getAlliance() == TrajectoryUtils.Alliance.BLUE) {
+            if (skystonePattern == SkystonePattern.LEFT)
                 skystonePattern = SkystonePattern.RIGHT;
-            else if(skystonePattern == SkystonePattern.RIGHT)
+            else if (skystonePattern == SkystonePattern.RIGHT)
                 skystonePattern = SkystonePattern.LEFT;
         }
 
@@ -186,7 +186,7 @@ public abstract class TwoStoneAuto extends LinearOpMode {
     }
 
     private double average(Scalar s) {
-        if(s == null || s.val == null)
+        if (s == null || s.val == null)
             return 0;
         return Arrays.stream(s.val).average().orElse(0);
     }

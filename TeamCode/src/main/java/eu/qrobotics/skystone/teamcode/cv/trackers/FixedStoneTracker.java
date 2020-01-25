@@ -56,10 +56,10 @@ public class FixedStoneTracker extends OpenCvTracker {
      * Segment an image based on hue, saturation, and luminance ranges.
      *
      * @param input The image on which to perform the HSL threshold.
-     * @param hue The min and max hue
-     * @param sat The min and max saturation
-     * @param lum The min and max luminance
-     * @param out The image in which to store the output.
+     * @param hue   The min and max hue
+     * @param sat   The min and max saturation
+     * @param lum   The min and max luminance
+     * @param out   The image in which to store the output.
      */
     private void hslThreshold(Mat input, double[] hue, double[] sat, double[] lum,
                               Mat out) {

@@ -3,7 +3,6 @@ package eu.qrobotics.skystone.teamcode.opmode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import eu.qrobotics.skystone.teamcode.subsystems.Arm;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
 
 @TeleOp(group = "Test")

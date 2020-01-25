@@ -44,8 +44,7 @@ public class FixedStoneVision extends LinearOpMode {
     private SkystonePattern skystonePattern;
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         stickyGamepad1 = new StickyGamepad(gamepad1);
 
         leftStone = new FixedStoneTracker(
@@ -88,15 +87,15 @@ public class FixedStoneVision extends LinearOpMode {
             int maxIdx = 0;
             double max = 0;
             for (int i = 0; i < counts.length; i++) {
-                if(counts[i] > max) {
+                if (counts[i] > max) {
                     max = counts[i];
                     maxIdx = i;
                 }
             }
 
-            if(maxIdx == 0) {
+            if (maxIdx == 0) {
                 skystonePattern = SkystonePattern.LEFT;
-            } else if(maxIdx == 1) {
+            } else if (maxIdx == 1) {
                 skystonePattern = SkystonePattern.MIDDLE;
             } else {
                 skystonePattern = SkystonePattern.RIGHT;
@@ -113,8 +112,7 @@ public class FixedStoneVision extends LinearOpMode {
         if (isStopRequested())
             return;
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             telemetry.addData("Frame Count", webcam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
             telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
@@ -128,7 +126,7 @@ public class FixedStoneVision extends LinearOpMode {
     }
 
     private double average(Scalar s) {
-        if(s == null || s.val == null)
+        if (s == null || s.val == null)
             return 0;
         return Arrays.stream(s.val).average().orElse(0);
     }

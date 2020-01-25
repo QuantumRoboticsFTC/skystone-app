@@ -51,11 +51,10 @@ public class Intake implements Subsystem {
     public void update() {
         switch (intakeMode) {
             case IN:
-                if(checkSwitch()) {
+                if (checkSwitch()) {
                     leftIntake.setPower(INTAKE_IN_SPEED);
                     rightIntake.setPower(INTAKE_IN_SPEED);
-                }
-                else {
+                } else {
                     intakeMode = IntakeMode.IDLE;
                     robot.arm.armMode = ArmMode.INTAKE;
                 }

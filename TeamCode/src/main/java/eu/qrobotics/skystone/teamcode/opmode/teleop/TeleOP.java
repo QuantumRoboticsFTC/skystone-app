@@ -80,10 +80,10 @@ public class TeleOP extends OpMode {
         }
 
         // Alex Radu
-        if(stickyGamepad1.left_bumper) {
+        if (stickyGamepad1.left_bumper) {
             driveMode = DriveMode.SLOW;
         }
-        if(stickyGamepad1.right_bumper) {
+        if (stickyGamepad1.right_bumper) {
             driveMode = DriveMode.NORMAL;
         }
 
