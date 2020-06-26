@@ -64,5 +64,5 @@ dependencies {
     /*
      * Libraries
      */
-    implementation 'com.acmerobotics.dashboard:dashboard:0.3.6'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.8'
 }
