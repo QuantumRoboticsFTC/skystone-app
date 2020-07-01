@@ -19,7 +19,7 @@ public class IntakeTest extends OpMode {
 
     @Override
     public void start() {
-        robot.intake.intakeMode = Intake.IntakeMode.IN;
+        robot.intake.intakeMode = Intake.IntakeMode.IDLE;
         robot.start();
     }
 
@@ -27,7 +27,12 @@ public class IntakeTest extends OpMode {
     public void loop() {
         if (gamepad1.a)
             robot.intake.intakeMode = Intake.IntakeMode.IN;
-
+        if(gamepad1.b) {
+            robot.intake.intakeMode= Intake.IntakeMode.IDLE;
+        }
+        if(gamepad1.y) {
+            robot.intake.intakeMode= Intake.IntakeMode.OUT;
+        }
         telemetry.addData("INTAKE MODE", robot.intake.intakeMode);
         telemetry.update();
     }
