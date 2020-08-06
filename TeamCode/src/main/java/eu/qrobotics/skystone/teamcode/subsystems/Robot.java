@@ -28,7 +28,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
     public Elevator elevator;
     public Arm arm;
     public FoundationGrabber foundationGrabber;
-    public RuletaDeCacatALuiTudor ruleta;
+    public RuletaAlexMircea ruleta;
     public SideArm sideArm;
 
     private List<Subsystem> subsystems;
@@ -124,7 +124,7 @@ public class Robot implements OpModeManagerNotifier.Notifications, GlobalWarning
         }
 
         try {
-            ruleta = new RuletaDeCacatALuiTudor(opMode.hardwareMap, this);
+            ruleta = new RuletaAlexMircea(opMode.hardwareMap, this);
             subsystems.add(ruleta);
         } catch (Exception e) {
             Log.w(TAG, "skipping RuletaDeCacatALuiTudor");

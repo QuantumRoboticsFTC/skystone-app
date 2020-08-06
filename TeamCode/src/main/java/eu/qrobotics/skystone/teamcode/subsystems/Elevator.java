@@ -3,6 +3,7 @@ package eu.qrobotics.skystone.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
@@ -10,13 +11,13 @@ public class Elevator implements Subsystem {
 
     public static int THRESHOLD_DOWN = 20;
     public static int THRESHOLD = 10;
-    public static int THRESHOLD_LEVEL_1 = 40;
-    public static int THRESHOLD_LEVEL_2 = 100;
+    public static int THRESHOLD_LEVEL_1 = 10;
+    public static int THRESHOLD_LEVEL_2 = 50;
     public static int THRESHOLD_LEVEL_3 = 250;
-    public static double DOWN_POWER = -0.85;
-    public static double HOLD_POWER = 0.1;
-    public static double LEVEL_1_POWER = 0.2;
-    public static double LEVEL_2_POWER = 0.5;
+    public static double DOWN_POWER = -0.35;
+    public static double HOLD_POWER = 0.21;
+    public static double LEVEL_1_POWER = 0.4;
+    public static double LEVEL_2_POWER = 0.6;
     public static double LEVEL_3_POWER = 0.85;
     public static double LEVEL_4_POWER = 1;
 
@@ -28,20 +29,29 @@ public class Elevator implements Subsystem {
     }
 
     public enum TargetHeight {
-        STONE_1(110),
-        STONE_2(310),
-        STONE_3(510),
-        STONE_4(710),
-        STONE_5(910),
-        STONE_6(1110),
-        STONE_7(1310),
-        STONE_8(1510),
-        STONE_9(1710),
-        STONE_10(1910),
-        STONE_11(2110),
-        STONE_12(2310),
-        STONE_13(2510),
-        STONE_14(2710);
+        STONE_1(0) {
+            @Override
+            public TargetHeight previous() {
+                return this;
+            }
+        },
+        STONE_2(150),
+        STONE_3(300),
+        STONE_4(450),
+        STONE_5(600),
+        STONE_6(750),
+        STONE_7(900),
+        STONE_8(1050),
+        STONE_9(1200),
+        STONE_10(1350),
+        STONE_11(1500),
+        STONE_12(1650),
+        STONE_13(1800) {
+            @Override
+            public TargetHeight next() {
+                return this;
+            }
+        };
 
         private final int encoderPosition;
 
@@ -50,7 +60,15 @@ public class Elevator implements Subsystem {
         }
 
         public int getEncoderPosition() {
-            return (int) (encoderPosition * 145.6 / 383.6); // for 5:1 motor
+            return encoderPosition;
+        }
+
+        public TargetHeight previous() {
+            return values()[ordinal() - 1];
+        }
+
+        public TargetHeight next() {
+            return values()[ordinal() + 1];
         }
     }
 
@@ -70,8 +88,8 @@ public class Elevator implements Subsystem {
         motorLeft = hardwareMap.get(DcMotorEx.class, "elevatorLeft");
         motorRight = hardwareMap.get(DcMotorEx.class, "elevatorRight");
 
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
-        motorRight.setDirection(DcMotor.Direction.REVERSE); // Turns in wrong direction
+        motorLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorRight.setDirection(DcMotor.Direction.REVERSE);
 
         //motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -83,9 +101,7 @@ public class Elevator implements Subsystem {
     }
 
     public int getRawEncoder() {
-        //return -motorRight.getCurrentPosition(); // left
-        // Right motor turns in wrong direction
-        return -motorRight.getCurrentPosition(); // right
+        return motorRight.getCurrentPosition();
     }
 
     public int getEncoder() {
@@ -97,8 +113,15 @@ public class Elevator implements Subsystem {
         return lastEncoder;
     }
 
+    public int getTargetEncoder() {
+        if(elevatorMode == ElevatorMode.DOWN) {
+            return 0;
+        }
+        return targetPosition.getEncoderPosition();
+    }
+
     public int getDistanceLeft() {
-        return targetPosition.getEncoderPosition() - lastEncoder + (int) offsetPosition;
+        return getTargetEncoder() - lastEncoder + (int) offsetPosition;
     }
 
     public TargetHeight getTargetPosition() {
@@ -139,94 +162,10 @@ public class Elevator implements Subsystem {
     }
 
     public void nextStone() {
-        switch (targetPosition) {
-            case STONE_1:
-                targetPosition = TargetHeight.STONE_2;
-                break;
-            case STONE_2:
-                targetPosition = TargetHeight.STONE_3;
-                break;
-            case STONE_3:
-                targetPosition = TargetHeight.STONE_4;
-                break;
-            case STONE_4:
-                targetPosition = TargetHeight.STONE_5;
-                break;
-            case STONE_5:
-                targetPosition = TargetHeight.STONE_6;
-                break;
-            case STONE_6:
-                targetPosition = TargetHeight.STONE_7;
-                break;
-            case STONE_7:
-                targetPosition = TargetHeight.STONE_8;
-                break;
-            case STONE_8:
-                targetPosition = TargetHeight.STONE_9;
-                break;
-            case STONE_9:
-                targetPosition = TargetHeight.STONE_10;
-                break;
-            case STONE_10:
-                targetPosition = TargetHeight.STONE_11;
-                break;
-            case STONE_11:
-                targetPosition = TargetHeight.STONE_12;
-                break;
-            case STONE_12:
-                targetPosition = TargetHeight.STONE_13;
-                break;
-            case STONE_13:
-                targetPosition = TargetHeight.STONE_14;
-                break;
-            case STONE_14:
-                break;
-        }
+        targetPosition = targetPosition.next();
     }
 
     public void previousStone() {
-        switch (targetPosition) {
-            case STONE_1:
-                break;
-            case STONE_2:
-                targetPosition = TargetHeight.STONE_1;
-                break;
-            case STONE_3:
-                targetPosition = TargetHeight.STONE_2;
-                break;
-            case STONE_4:
-                targetPosition = TargetHeight.STONE_3;
-                break;
-            case STONE_5:
-                targetPosition = TargetHeight.STONE_4;
-                break;
-            case STONE_6:
-                targetPosition = TargetHeight.STONE_5;
-                break;
-            case STONE_7:
-                targetPosition = TargetHeight.STONE_6;
-                break;
-            case STONE_8:
-                targetPosition = TargetHeight.STONE_7;
-                break;
-            case STONE_9:
-                targetPosition = TargetHeight.STONE_8;
-                break;
-            case STONE_10:
-                targetPosition = TargetHeight.STONE_9;
-                break;
-            case STONE_11:
-                targetPosition = TargetHeight.STONE_10;
-                break;
-            case STONE_12:
-                targetPosition = TargetHeight.STONE_11;
-                break;
-            case STONE_13:
-                targetPosition = TargetHeight.STONE_12;
-                break;
-            case STONE_14:
-                targetPosition = TargetHeight.STONE_13;
-                break;
-        }
+        targetPosition = targetPosition.previous();
     }
 }

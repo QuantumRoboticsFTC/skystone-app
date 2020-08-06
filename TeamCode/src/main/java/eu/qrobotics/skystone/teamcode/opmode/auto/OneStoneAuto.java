@@ -171,7 +171,7 @@ public abstract class OneStoneAuto extends LinearOpMode {
         targetsSkyStone.deactivate();
 
         robot.elevator.elevatorMode = ElevatorMode.DISABLED;
-        robot.arm.armMode = ArmMode.IDLE_AUTONOMY;
+        robot.arm.armMode = ArmMode.FRONT;
         robot.intake.intakeMode = IntakeMode.IN;
 
         robot.drive.followTrajectorySync(trajectories.get(0));
@@ -187,12 +187,12 @@ public abstract class OneStoneAuto extends LinearOpMode {
 
         robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.UP;
         robot.sleep(0.5);
-        robot.arm.armMode = ArmMode.OUTTAKE_LOW;
+        robot.arm.armMode = ArmMode.BACK;
         robot.sleep(1);
 
-        robot.arm.gripperMode = GripperMode.OPEN;
+        robot.arm.gripperMode = GripperMode.DROP;
         robot.sleep(0.5);
-        robot.arm.armMode = ArmMode.IDLE;
+        robot.arm.armMode = ArmMode.FRONT;
         robot.sleep(1);
 
         robot.drive.followTrajectorySync(trajectories.get(3));

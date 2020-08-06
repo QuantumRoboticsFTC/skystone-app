@@ -19,8 +19,8 @@ public class FoundationGrabber implements Subsystem {
     FoundationGrabber(HardwareMap hardwareMap, Robot robot) {
         this.robot = robot;
 
-        leftFoundationGrabber = hardwareMap.get(Servo.class, "leftFoundationServo");
-        rightFoundationGrabber = hardwareMap.get(Servo.class, "rightFoundationServo");
+        leftFoundationGrabber = hardwareMap.get(Servo.class, "leftFoundation");
+        rightFoundationGrabber = hardwareMap.get(Servo.class, "rightFoundation");
 
         foundationGrabberMode = FoundationGrabberMode.UP;
     }

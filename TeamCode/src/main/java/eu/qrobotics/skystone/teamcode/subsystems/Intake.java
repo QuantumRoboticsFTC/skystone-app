@@ -39,7 +39,7 @@ public class Intake implements Subsystem {
 
         intakeButton = hardwareMap.get(DigitalChannel.class, "intakeButton");
 
-        rightIntake.setDirection(DcMotor.Direction.REVERSE);
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
         intakeMode = IntakeMode.IDLE;
     }
 
@@ -56,7 +56,7 @@ public class Intake implements Subsystem {
                     rightIntake.setPower(INTAKE_IN_SPEED);
                 } else {
                     intakeMode = IntakeMode.IDLE;
-                    robot.arm.armMode = ArmMode.INTAKE;
+                    robot.arm.armMode = ArmMode.FRONT;
                 }
                 break;
             case IDLE:

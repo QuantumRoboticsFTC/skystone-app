@@ -28,14 +28,18 @@ public class ArmTest extends OpMode {
     public void loop() {
         gamepad.update();
 
-        if (gamepad.b)
-            robot.arm.armMode = Arm.ArmMode.OUTTAKE_LOW;
+        if (gamepad.b) {
+            if (robot.arm.armMode == Arm.ArmMode.FRONT)
+                robot.arm.armMode = Arm.ArmMode.BACK;
+            else
+                robot.arm.armMode = Arm.ArmMode.FRONT;
+        }
 
         if (gamepad.x) {
-            if (robot.arm.gripperMode == Arm.GripperMode.OPEN)
-                robot.arm.gripperMode = Arm.GripperMode.CLOSE;
+            if (robot.arm.gripperMode == Arm.GripperMode.DROP)
+                robot.arm.gripperMode = Arm.GripperMode.GRIP;
             else
-                robot.arm.gripperMode = Arm.GripperMode.OPEN;
+                robot.arm.gripperMode = Arm.GripperMode.DROP;
         }
     }
 

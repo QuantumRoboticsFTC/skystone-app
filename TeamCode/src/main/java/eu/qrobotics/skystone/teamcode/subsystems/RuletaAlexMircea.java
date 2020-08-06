@@ -3,7 +3,7 @@ package eu.qrobotics.skystone.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class RuletaDeCacatALuiTudor implements Subsystem {
+public class RuletaAlexMircea implements Subsystem {
 
     public enum RuletaMode {
         OUT,
@@ -14,10 +14,11 @@ public class RuletaDeCacatALuiTudor implements Subsystem {
     Robot robot;
     CRServo ruleta;
 
-    RuletaDeCacatALuiTudor(HardwareMap hardwareMap, Robot robot) {
+    RuletaAlexMircea(HardwareMap hardwareMap, Robot robot) {
         this.robot = robot;
 
         ruleta = hardwareMap.get(CRServo.class, "ruleta");
+        ruletaMode = RuletaMode.IDLE;
     }
 
     @Override

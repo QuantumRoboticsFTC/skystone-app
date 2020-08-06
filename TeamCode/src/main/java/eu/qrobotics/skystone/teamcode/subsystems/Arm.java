@@ -9,48 +9,46 @@ public class Arm implements Subsystem {
     public static boolean IS_DISABLED = false;
 
     public enum GripperMode {
-        CLOSE,
-        OPEN,
+        INTAKE,
+        GRIP,
+        DROP,
         CAPSTONE
     }
 
-    public static double GRIPPER_CLOSE_POSITION = 1; //0.915;
-    public static double GRIPPER_OPEN_POSITION = 0; // 0.45;
-    public static double GRIPPER_CAPSTONE_POSITION = 0.25;
+    public static double GRIPPER_FRONT_INTAKE_POSITION = 1;
+    public static double GRIPPER_BACK_INTAKE_POSITION = 1;
+
+    public static double GRIPPER_FRONT_GRIP_POSITION = 0.1;
+    public static double GRIPPER_BACK_GRIP_POSITION = 0.9;
+
+    public static double GRIPPER_FRONT_DROP_POSITION = 0.2;
+    public static double GRIPPER_BACK_DROP_POSITION = 0.6;
+
+    public static double GRIPPER_FRONT_CAPSTONE_POSITION = 1;
+    public static double GRIPPER_BACK_CAPSTONE_POSITION = 0;
 
     public enum ArmMode {
-        INTAKE,
-        IDLE,
-        IDLE_AUTONOMY,
-        OUTTAKE_HIGH,
-        OUTTAKE_LOW
+        FRONT,
+        BACK
     }
 
-    public static double ARM_LEFT_INTAKE_POSITION = 0;
-    public static double ARM_RIGHT_INTAKE_POSITION = 1;
-    public static double ARM_LEFT_IDLE_POSITION = 0.05;
-    public static double ARM_RIGHT_IDLE_POSITION = 0.95;
-    public static double ARM_LEFT_IDLE_AUTONOMY_POSITION = 0.097;
-    public static double ARM_RIGHT_IDLE_AUTONOMY_POSITION = 0.903;
-    public static double ARM_LEFT_OUTTAKE_HIGH_POSITION = 0.4;
-    public static double ARM_RIGHT_OUTTAKE_HIGH_POSITION = 0.6;
-    public static double ARM_LEFT_OUTTAKE_LOW_POSITION = 0.87;
-    public static double ARM_RIGHT_OUTTAKE_LOW_POSITION = 0.13;
+    public static double ARM_FRONT_POSITION = 0;
+    public static double ARM_BACK_POSITION = 1;
 
     public GripperMode gripperMode;
     public ArmMode armMode;
 
-    private Servo leftArmServo, rightArmServo, gripperServo;
+    private Servo armServo, gripperFrontServo, gripperBackServo;
     private Robot robot;
 
     Arm(HardwareMap hardwareMap, Robot robot) {
         this.robot = robot;
-        gripperMode = GripperMode.OPEN;
-        armMode = ArmMode.IDLE;
+        gripperMode = GripperMode.INTAKE;
+        armMode = ArmMode.FRONT;
 
-        leftArmServo = hardwareMap.get(Servo.class, "leftArmServo");
-        rightArmServo = hardwareMap.get(Servo.class, "rightArmServo");
-        gripperServo = hardwareMap.get(Servo.class, "gripperServo");
+        armServo = hardwareMap.get(Servo.class, "slider");
+        gripperFrontServo = hardwareMap.get(Servo.class, "gripperFront");
+        gripperBackServo = hardwareMap.get(Servo.class, "gripperBack");
     }
 
     @Override
@@ -59,33 +57,29 @@ public class Arm implements Subsystem {
             return;
 
         switch (gripperMode) {
-            case OPEN:
-                gripperServo.setPosition(GRIPPER_OPEN_POSITION);
+            case INTAKE:
+                gripperFrontServo.setPosition(GRIPPER_FRONT_INTAKE_POSITION);
+                gripperBackServo.setPosition(GRIPPER_BACK_INTAKE_POSITION);
                 break;
-            case CLOSE:
-                gripperServo.setPosition(GRIPPER_CLOSE_POSITION);
+            case GRIP:
+                gripperFrontServo.setPosition(GRIPPER_FRONT_GRIP_POSITION);
+                gripperBackServo.setPosition(GRIPPER_BACK_GRIP_POSITION);
+                break;
+            case DROP:
+                gripperFrontServo.setPosition(GRIPPER_FRONT_DROP_POSITION);
+                gripperBackServo.setPosition(GRIPPER_BACK_DROP_POSITION);
                 break;
             case CAPSTONE:
-                gripperServo.setPosition(GRIPPER_CAPSTONE_POSITION);
+                gripperFrontServo.setPosition(GRIPPER_FRONT_CAPSTONE_POSITION);
+                gripperBackServo.setPosition(GRIPPER_BACK_CAPSTONE_POSITION);
                 break;
         }
-
         switch (armMode) {
-            case INTAKE:
-                leftArmServo.setPosition(ARM_LEFT_INTAKE_POSITION);
-                rightArmServo.setPosition(ARM_RIGHT_INTAKE_POSITION);
+            case FRONT:
+                armServo.setPosition(ARM_FRONT_POSITION);
                 break;
-            case IDLE:
-                leftArmServo.setPosition(ARM_LEFT_IDLE_POSITION);
-                rightArmServo.setPosition(ARM_RIGHT_IDLE_POSITION);
-                break;
-            case OUTTAKE_HIGH:
-                leftArmServo.setPosition(ARM_LEFT_OUTTAKE_HIGH_POSITION);
-                rightArmServo.setPosition(ARM_RIGHT_OUTTAKE_HIGH_POSITION);
-                break;
-            case OUTTAKE_LOW:
-                leftArmServo.setPosition(ARM_LEFT_OUTTAKE_LOW_POSITION);
-                rightArmServo.setPosition(ARM_RIGHT_OUTTAKE_LOW_POSITION);
+            case BACK:
+                armServo.setPosition(ARM_BACK_POSITION);
                 break;
         }
     }

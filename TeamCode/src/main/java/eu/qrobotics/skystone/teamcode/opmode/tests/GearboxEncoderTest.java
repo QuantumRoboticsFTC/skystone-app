@@ -18,7 +18,8 @@ public class GearboxEncoderTest extends OpMode {
 
     @Override
     public void start() {
-        robot.arm.armMode = Arm.ArmMode.OUTTAKE_LOW;
+        robot.arm.armMode = Arm.ArmMode.BACK;
+        robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
         robot.start();
     }
 

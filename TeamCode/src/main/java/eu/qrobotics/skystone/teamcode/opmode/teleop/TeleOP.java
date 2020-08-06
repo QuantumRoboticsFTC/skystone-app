@@ -3,14 +3,12 @@ package eu.qrobotics.skystone.teamcode.opmode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.util.Collections;
-
 import eu.qrobotics.skystone.teamcode.subsystems.Arm;
 import eu.qrobotics.skystone.teamcode.subsystems.Elevator;
 import eu.qrobotics.skystone.teamcode.subsystems.FoundationGrabber.FoundationGrabberMode;
 import eu.qrobotics.skystone.teamcode.subsystems.Intake;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
-import eu.qrobotics.skystone.teamcode.subsystems.RuletaDeCacatALuiTudor.RuletaMode;
+import eu.qrobotics.skystone.teamcode.subsystems.RuletaAlexMircea.RuletaMode;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
 import static eu.qrobotics.skystone.teamcode.subsystems.Elevator.THRESHOLD;
@@ -35,7 +33,7 @@ public class TeleOP extends OpMode {
     @Override
     public void init() {
         robot = new Robot(this, false);
-        robot.drive.fieldCentric = true;
+//        robot.drive.fieldCentric = true;
         stickyGamepad1 = new StickyGamepad(gamepad1);
         stickyGamepad2 = new StickyGamepad(gamepad2);
         driveMode = DriveMode.NORMAL;
@@ -87,31 +85,34 @@ public class TeleOP extends OpMode {
             driveMode = DriveMode.NORMAL;
         }
 
-        if (stickyGamepad2.x)
-            robot.arm.gripperMode = Arm.GripperMode.OPEN;
-        if (stickyGamepad2.y)
+        if (stickyGamepad2.x) {
+            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
+                robot.elevator.offsetPosition += 35;
+            robot.arm.gripperMode = Arm.GripperMode.DROP;
+        }
+        if (stickyGamepad2.y) {
+            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
+                robot.elevator.offsetPosition += 35;
             robot.arm.gripperMode = Arm.GripperMode.CAPSTONE;
+        }
         if (stickyGamepad2.right_bumper) {
-            robot.arm.gripperMode = Arm.GripperMode.CLOSE;
+            robot.arm.gripperMode = Arm.GripperMode.GRIP;
             elevatorUpStartTime = getRuntime();
         }
         if (stickyGamepad2.left_bumper) {
-            robot.elevator.offsetPosition += 100;
-            robot.arm.gripperMode = Arm.GripperMode.OPEN;
+            robot.arm.armMode = Arm.ArmMode.FRONT;
             elevatorDownStartTime = getRuntime();
         }
 
         if (1 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 1.1) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
-            robot.arm.armMode = Arm.ArmMode.OUTTAKE_HIGH;
             elevatorToggle = false;
         }
 
-        if (0.3 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.4)
-            robot.arm.armMode = Arm.ArmMode.IDLE;
-
-        if (0.8 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.9)
+        if (1 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 1.1) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
+            elevatorToggle = false;
+        }
 
         if (gamepad2.left_stick_y < -0.1)
             robot.intake.intakeMode = Intake.IntakeMode.IN;
@@ -155,13 +156,18 @@ public class TeleOP extends OpMode {
 
         if (robot.elevator.elevatorMode == Elevator.ElevatorMode.UP
                 && !elevatorToggle
-                && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD + 100) {
-            robot.arm.armMode = Arm.ArmMode.OUTTAKE_LOW;
+                && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD + 10) {
+            robot.arm.armMode = Arm.ArmMode.BACK;
             elevatorToggle = true;
         }
 
-        telemetry.addData("Motor Powers", Collections.singletonList(robot.drive.getMotorPower()));
-        telemetry.addData("Encoder position", robot.elevator.getLastEncoder());
+        if(robot.elevator.elevatorMode == Elevator.ElevatorMode.DOWN && !elevatorToggle && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD) {
+            robot.arm.gripperMode = Arm.GripperMode.INTAKE;
+            elevatorToggle = true;
+        }
+
+        /*telemetry.addData("Motor Powers", Collections.singletonList(robot.drive.getMotorPower()));
+        telemetry.addData("Encoder position", robot.elevator.getLastEncoder());*/
         telemetry.addData("Elevator Height", robot.elevator.getTargetPosition());
         telemetry.update();
     }
