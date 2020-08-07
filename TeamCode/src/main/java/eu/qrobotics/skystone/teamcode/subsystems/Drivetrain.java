@@ -55,6 +55,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         IDLE
     }
 
+    public static double REAR_MULTIPLIER = 1.1;
+
     private FtcDashboard dashboard;
     private NanoClock clock;
 
@@ -270,10 +272,10 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v); //y RightFront
-        leftRear.setPower(v1); //x LeftRear
-        rightRear.setPower(v2); //b RightRear
-        rightFront.setPower(v3); //a LeftFront
+        leftFront.setPower(v);
+        leftRear.setPower(v1 * REAR_MULTIPLIER);
+        rightRear.setPower(v2 * REAR_MULTIPLIER);
+        rightFront.setPower(v3);
     }
 
     @Override
