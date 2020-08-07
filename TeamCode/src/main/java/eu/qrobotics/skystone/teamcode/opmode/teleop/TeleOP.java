@@ -86,13 +86,13 @@ public class TeleOP extends OpMode {
         }
 
         if (stickyGamepad2.x) {
-            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
-                robot.elevator.offsetPosition += 35;
+//            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
+//                robot.elevator.offsetPosition += 75;
             robot.arm.gripperMode = Arm.GripperMode.DROP;
         }
         if (stickyGamepad2.y) {
-            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
-                robot.elevator.offsetPosition += 35;
+//            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
+//                robot.elevator.offsetPosition += 75;
             robot.arm.gripperMode = Arm.GripperMode.CAPSTONE;
         }
         if (stickyGamepad2.right_bumper) {
@@ -101,15 +101,18 @@ public class TeleOP extends OpMode {
         }
         if (stickyGamepad2.left_bumper) {
             robot.arm.armMode = Arm.ArmMode.FRONT;
+            robot.arm.gripperMode = Arm.GripperMode.DROP;
+            if(robot.elevator.getTargetPosition() != Elevator.TargetHeight.STONE_15)
+                robot.elevator.offsetPosition += 75;
             elevatorDownStartTime = getRuntime();
         }
 
-        if (1 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 1.1) {
+        if (0.6 < getRuntime() - elevatorUpStartTime && getRuntime() - elevatorUpStartTime < 0.7) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
             elevatorToggle = false;
         }
 
-        if (1 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 1.1) {
+        if (0.8 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.9) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
             elevatorToggle = false;
         }
@@ -128,6 +131,8 @@ public class TeleOP extends OpMode {
 
         if (gamepad2.b)
             robot.ruleta.ruletaMode = RuletaMode.OUT;
+        else if(gamepad2.a)
+            robot.ruleta.ruletaMode = RuletaMode.IN;
         else
             robot.ruleta.ruletaMode = RuletaMode.IDLE;
 

@@ -7,6 +7,7 @@ public class RuletaAlexMircea implements Subsystem {
 
     public enum RuletaMode {
         OUT,
+        IN,
         IDLE
     }
 
@@ -26,6 +27,9 @@ public class RuletaAlexMircea implements Subsystem {
         switch (ruletaMode) {
             case OUT:
                 ruleta.setPower(-1);
+                break;
+            case IN:
+                ruleta.setPower(0.5);
                 break;
             case IDLE:
                 ruleta.setPower(0);

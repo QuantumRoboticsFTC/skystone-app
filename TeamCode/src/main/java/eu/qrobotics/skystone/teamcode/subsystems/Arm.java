@@ -19,12 +19,12 @@ public class Arm implements Subsystem {
     public static double GRIPPER_BACK_INTAKE_POSITION = 1;
 
     public static double GRIPPER_FRONT_GRIP_POSITION = 0.1;
-    public static double GRIPPER_BACK_GRIP_POSITION = 0.9;
+    public static double GRIPPER_BACK_GRIP_POSITION = 1;
 
     public static double GRIPPER_FRONT_DROP_POSITION = 0.2;
-    public static double GRIPPER_BACK_DROP_POSITION = 0.6;
+    public static double GRIPPER_BACK_DROP_POSITION = 0.54;
 
-    public static double GRIPPER_FRONT_CAPSTONE_POSITION = 1;
+    public static double GRIPPER_FRONT_CAPSTONE_POSITION = 0.2;
     public static double GRIPPER_BACK_CAPSTONE_POSITION = 0;
 
     public enum ArmMode {

@@ -35,18 +35,20 @@ public class Elevator implements Subsystem {
                 return this;
             }
         },
-        STONE_2(150),
-        STONE_3(300),
-        STONE_4(450),
-        STONE_5(600),
-        STONE_6(750),
-        STONE_7(900),
-        STONE_8(1050),
-        STONE_9(1200),
-        STONE_10(1350),
-        STONE_11(1500),
-        STONE_12(1650),
-        STONE_13(1800) {
+        STONE_2(120),
+        STONE_3(250),
+        STONE_4(380),
+        STONE_5(510),
+        STONE_6(640),
+        STONE_7(770),
+        STONE_8(900),
+        STONE_9(1030),
+        STONE_10(1160),
+        STONE_11(1290),
+        STONE_12(1420),
+        STONE_13(1540),
+        STONE_14(1650),
+        STONE_15(1740) {
             @Override
             public TargetHeight next() {
                 return this;
