@@ -149,18 +149,26 @@ public class Elevator implements Subsystem {
         } else if (elevatorMode == ElevatorMode.UP) {
             int distanceLeft = targetPosition.getEncoderPosition() - getEncoder() + (int) offsetPosition;
             if (Math.abs(distanceLeft) <= THRESHOLD)
-                setPower(HOLD_POWER);
+                setPower(HOLD_POWER + powerForHeight(getEncoder()) / 3);
             else if (Math.abs(distanceLeft) <= THRESHOLD_LEVEL_1)
-                setPower(LEVEL_1_POWER * Math.signum(distanceLeft));
+                setPower(LEVEL_1_POWER * Math.signum(distanceLeft) + powerForHeight(getEncoder()));
             else if (Math.abs(distanceLeft) <= THRESHOLD_LEVEL_2)
-                setPower(LEVEL_2_POWER * Math.signum(distanceLeft));
+                setPower(LEVEL_2_POWER * Math.signum(distanceLeft) + powerForHeight(getEncoder()));
             else if (Math.abs(distanceLeft) <= THRESHOLD_LEVEL_3)
-                setPower(LEVEL_3_POWER * Math.signum(distanceLeft));
+                setPower(LEVEL_3_POWER * Math.signum(distanceLeft) + powerForHeight(getEncoder()));
             else
-                setPower(LEVEL_4_POWER * Math.signum(distanceLeft));
+                setPower(LEVEL_4_POWER * Math.signum(distanceLeft) + powerForHeight(getEncoder()));
         } else {
             setPower(manualPower);
         }
+    }
+
+    private double powerForHeight(int encoder) {
+        if(encoder > TargetHeight.STONE_6.getEncoderPosition())
+            return 0.1;
+        if(encoder > TargetHeight.STONE_12.getEncoderPosition())
+            return 0.15;
+        return 0;
     }
 
     public void nextStone() {
