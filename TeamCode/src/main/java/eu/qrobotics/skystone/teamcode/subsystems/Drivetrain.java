@@ -76,6 +76,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     private boolean isAutonomous;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotor leftEncoder;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
@@ -129,6 +130,10 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
+
+        leftEncoder = hardwareMap.get(DcMotor.class, "intakeRight");
+
+        setLocalizer(new Odometry(hardwareMap));
     }
 
     public void turn(double angle) {
