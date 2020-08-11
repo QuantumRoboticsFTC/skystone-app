@@ -72,8 +72,8 @@ public class Intake implements Subsystem {
                 rightIntake.setPower(INTAKE_OUT_SLOW_SPEED);
                 break;
             case FOLD:
-                leftIntake.setPower(-0.5);
-                rightIntake.setPower(0.5);
+                leftIntake.setPower(-0.7);
+                rightIntake.setPower(0.7);
                 break;
         }
     }

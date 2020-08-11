@@ -128,14 +128,16 @@ public class TeleOP extends OpMode {
             robot.elevator.nextStone();
         if (stickyGamepad2.dpad_down)
             robot.elevator.previousStone();
-
         if (gamepad2.b)
             robot.ruleta.ruletaMode = RuletaMode.OUT;
         else if(gamepad2.a)
             robot.ruleta.ruletaMode = RuletaMode.IN;
         else
             robot.ruleta.ruletaMode = RuletaMode.IDLE;
-
+        if(gamepad2.dpad_left)
+            robot.intake.intakeMode= Intake.IntakeMode.FOLD;
+        else if(robot.intake.intakeMode == Intake.IntakeMode.FOLD)
+            robot.intake.intakeMode= Intake.IntakeMode.IDLE;
         if (stickyGamepad1.x || stickyGamepad1.dpad_down) {
             if (robot.foundationGrabber.foundationGrabberMode == FoundationGrabberMode.UP)
                 robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.DOWN;
@@ -171,8 +173,7 @@ public class TeleOP extends OpMode {
             elevatorToggle = true;
         }
 
-        /*telemetry.addData("Motor Powers", Collections.singletonList(robot.drive.getMotorPower()));
-        telemetry.addData("Encoder position", robot.elevator.getLastEncoder());*/
+        telemetry.addData("Motor Powers", robot.drive.getMotorPower());
         telemetry.addData("Elevator Height", robot.elevator.getTargetPosition());
         telemetry.update();
     }
