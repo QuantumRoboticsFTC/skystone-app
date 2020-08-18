@@ -22,15 +22,15 @@ public class SideArm implements Subsystem {
         OPEN
     }
 
-    public static double PIVOT_START = 0.015;
-    public static double PIVOT_UP = 0.04;
-    public static double PIVOT_MIDDLE = 0.115;
-    public static double PIVOT_COLLECT = 0.4;
-    public static double PIVOT_PLACE_UP = 0.3;
-    public static double PIVOT_PLACE_DOWN = 0.35;
+    public static double PIVOT_START = 0.56;
+    public static double PIVOT_UP = 0.56;
+    public static double PIVOT_MIDDLE = 0.45;
+    public static double PIVOT_COLLECT = 0.10;
+    public static double PIVOT_PLACE_UP = 0.25;
+    public static double PIVOT_PLACE_DOWN = 0.15;
 
     public static double CLAW_CLOSE = 0;
-    public static double CLAW_STONE = 0.25;
+    public static double CLAW_STONE = 0.6;
     public static double CLAW_OPEN = 1;
 
     public PivotMode pivotMode;

@@ -3,18 +3,23 @@ package eu.qrobotics.skystone.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class Elevator implements Subsystem {
 
     public static int THRESHOLD_DOWN = 20;
+    public static int THRESHOLD_DOWN_LEVEL_1 = 150;
+    public static int THRESHOLD_DOWN_LEVEL_2 = 500;
+    public static int THRESHOLD_DOWN_LEVEL_3 = 1000;
     public static int THRESHOLD = 10;
     public static int THRESHOLD_LEVEL_1 = 10;
     public static int THRESHOLD_LEVEL_2 = 50;
     public static int THRESHOLD_LEVEL_3 = 250;
-    public static double DOWN_POWER = -0.35;
+    public static double DOWN_POWER_1 = -0.35;
+    public static double DOWN_POWER_2 = -0.5;
+    public static double DOWN_POWER_3 = -0.6;
+    public static double DOWN_POWER_4 = -0.7;
     public static double HOLD_POWER = 0.21;
     public static double LEVEL_1_POWER = 0.4;
     public static double LEVEL_2_POWER = 0.6;
@@ -144,8 +149,14 @@ public class Elevator implements Subsystem {
             offsetPosition = 0;
             if (getEncoder() <= THRESHOLD_DOWN)
                 setPower(0);
+            else if(getEncoder() <= THRESHOLD_DOWN_LEVEL_1)
+                setPower(DOWN_POWER_1);
+            else if(getEncoder() <= THRESHOLD_DOWN_LEVEL_2)
+                setPower(DOWN_POWER_2);
+            else if(getEncoder() <= THRESHOLD_DOWN_LEVEL_3)
+                setPower(DOWN_POWER_3);
             else
-                setPower(DOWN_POWER);
+                setPower(DOWN_POWER_4);
         } else if (elevatorMode == ElevatorMode.UP) {
             int distanceLeft = targetPosition.getEncoderPosition() - getEncoder() + (int) offsetPosition;
             if (Math.abs(distanceLeft) <= THRESHOLD)

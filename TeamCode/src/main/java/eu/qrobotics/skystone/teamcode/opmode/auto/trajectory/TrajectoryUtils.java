@@ -12,7 +12,7 @@ public class TrajectoryUtils {
     static final double BOTTOM_WALL = -3.0 * PAD;
     static final double INTAKE_L = 4.50;
     static final double INTAKE_CENTER_DISTANCE = ROBOT_L / 2 + INTAKE_L;
-    static final double STONE_Y = -21;
+    static final double STONE_Y = -22;
     static final double COLLECT_ANGLE = Math.toRadians(145);
     static final double STONE_SPLINE_DISTANCE = INTAKE_CENTER_DISTANCE + 1;
 

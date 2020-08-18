@@ -195,12 +195,12 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
 
     @Override
     public void update() {
+        updatePoseEstimate();
+
         if (!isAutonomous) {
             setMotorPowers(motorPowers[0], motorPowers[1], motorPowers[2], motorPowers[3]);
             return;
         }
-
-        updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
         Pose2d lastError = getLastError();
@@ -278,8 +278,8 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         leftFront.setPower(v);
-        leftRear.setPower(v1 * REAR_MULTIPLIER);
-        rightRear.setPower(v2 * REAR_MULTIPLIER);
+        leftRear.setPower(v1 * (isAutonomous ? REAR_MULTIPLIER : 1));
+        rightRear.setPower(v2 * (isAutonomous ? REAR_MULTIPLIER : 1));
         rightFront.setPower(v3);
     }
 

@@ -53,7 +53,7 @@ public class DoubleServoProgrammer extends OpMode {
     }
 
     private Servo leftServo = null;
-//    private Servo rightServo = null;
+    private Servo rightServo = null;
 
     private StickyGamepad stickyGamepad = null;
 
@@ -68,8 +68,8 @@ public class DoubleServoProgrammer extends OpMode {
 
     @Override
     public void init() {
-        leftServo = hardwareMap.get(Servo.class, "gripperBack");
-//        rightServo = hardwareMap.get(Servo.class, "rightArmServo");
+        leftServo = hardwareMap.get(Servo.class, "sideArmPivot");
+        rightServo = hardwareMap.get(Servo.class, "sideArmClaw");
 
         stickyGamepad = new StickyGamepad(gamepad1);
 
@@ -138,21 +138,20 @@ public class DoubleServoProgrammer extends OpMode {
 
             // update pwm and servo position
             if (isRightServoDisabled) {
-//                rightServo.getController().pwmDisable();
+                rightServo.getController().pwmDisable();
             } else {
-//                rightServo.getController().pwmEnable();
-
+                rightServo.getController().pwmEnable();
             }
         }
 
-//        rightServo.setPosition(currentPositionRight);
+        rightServo.setPosition(currentPositionRight);
     }
 
     private void updateTelemetry() {
         telemetry.addData("Programmer Mode", programmerMode.stringValue());
         telemetry.addData("Precision", programmerMode.getRawValue());
         telemetry.addData("Left Servo Position", leftServo.getPosition());
-//        telemetry.addData("Right Servo Position", rightServo.getPosition());
+        telemetry.addData("Right Servo Position", rightServo.getPosition());
         telemetry.addData("Left Servo Running", !isLeftServoDisabled);
         telemetry.addData("Right Servo Running", !isRightServoDisabled);
         telemetry.update();

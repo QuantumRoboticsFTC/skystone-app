@@ -146,8 +146,8 @@ public class AutoTrajectoryGenerator {
             stonesOrder = new int[]{2, 5};
         }
 
-        Pose2d firstSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[0] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 3.5 + 1 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 2.5, Math.toRadians(180));
-        Pose2d secondSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[1] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 3.5 + 4 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 1.5, Math.toRadians(180));
+        Pose2d firstSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[0] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 2.5 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 4, Math.toRadians(180));
+        Pose2d secondSkystone = new Pose2d(BOTTOM_WALL + stonesOrder[1] * STONE_L + STONE_L / 2 + ROBOT_L / 2 - 1.5 - (alliance == Alliance.BLUE ? 1 : 0), STONE_Y - STONE_W / 2 - ROBOT_W / 2 - 1.5, Math.toRadians(180));
 
         if (skystonePattern == SkystonePattern.LEFT && alliance == Alliance.RED) {
             trajectories.add(makeTrajectoryBuilder()
@@ -165,7 +165,7 @@ public class AutoTrajectoryGenerator {
                 .actualSetReversed(true)
                 .actualSplineTo(new Pose2d(-5, -31.0 - 4 - 7.5, Math.toRadians(180)))
                 .actualSplineTo(new Pose2d(5, -31.0 - 4 - 7.5, Math.toRadians(180)))
-                .actualSplineTo(new Pose2d(49.5, -31.0 - 4.25 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
+                .actualSplineTo(new Pose2d(51.5, -31.0 - 1.25 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
                 .build());
 
         if (skystonePattern == SkystonePattern.RIGHT) {
@@ -179,7 +179,7 @@ public class AutoTrajectoryGenerator {
                     .actualForward(6)
                     .actualSetReversed(true)
                     .actualSplineTo(new Pose2d(0, -31.0 - 3.5 - 8, Math.toRadians(180)))
-                    .actualSplineTo(new Pose2d(49.5, -31.0 - 1.5 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
+                    .actualSplineTo(new Pose2d(51.5, -31.0 - 5 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
                     .build());
         } else {
             trajectories.add(makeTrajectoryBuilder()
@@ -192,19 +192,19 @@ public class AutoTrajectoryGenerator {
                     .actualSetReversed(true)
                     .actualSplineTo(new Pose2d(-5, -31.0 - 3.5 - 7.5, Math.toRadians(180)))
                     .actualSplineTo(new Pose2d(5, -31.0 - 3.5 - 7.5, Math.toRadians(180)))
-                    .actualSplineTo(new Pose2d(49.5, -31.0 - 1.5 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
+                    .actualSplineTo(new Pose2d(51.5, -31.0 - 5 + (alliance == Alliance.BLUE ? 2 : 0), Math.toRadians(180)))
                     .build());
         }
 
         trajectories.add(makeTrajectoryBuilder()
                 .actualSetReversed(false)
-                .actualStrafeTo(new Vector2d(49.5, -31.0 - 1.5 + (alliance == Alliance.BLUE ? 2 : 0) - 2))
-                .actualSplineTo(new Pose2d(43, -44, Math.toRadians(-90)))
-                .actualStrafeTo(new Vector2d(43, -28 + (alliance == Alliance.BLUE ? 6 : 0)))
+                .actualStrafeTo(new Vector2d(51.5, -31.0 - 1.5 + (alliance == Alliance.BLUE ? 2 : 0) - 2))
+                .actualSplineTo(new Pose2d(45.5, -44, Math.toRadians(-90)))
+                .actualStrafeTo(new Vector2d(45.5, -28 + (alliance == Alliance.BLUE ? 6 : 0)))
                 .build());
         trajectories.add(makeTrajectoryBuilder()
-                .actualSplineTo(new Pose2d(24.0, -52.0, Math.toRadians(180.0)))
-                .actualStrafeTo(new Vector2d(45.0, -52.0))
+                .actualSplineTo(new Pose2d(20.0, -60.0, Math.toRadians(180.0)))
+                .actualStrafeTo(new Vector2d(45.0, -60.0))
                 .build());
         trajectories.add(makeTrajectoryBuilder()
                 .park()

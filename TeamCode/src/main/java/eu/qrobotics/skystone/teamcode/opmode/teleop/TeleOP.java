@@ -3,6 +3,8 @@ package eu.qrobotics.skystone.teamcode.opmode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.Arrays;
+
 import eu.qrobotics.skystone.teamcode.subsystems.Arm;
 import eu.qrobotics.skystone.teamcode.subsystems.Elevator;
 import eu.qrobotics.skystone.teamcode.subsystems.FoundationGrabber.FoundationGrabberMode;
@@ -56,10 +58,10 @@ public class TeleOP extends OpMode {
                 robot.drive.setMotorPowersFromGamepad(gamepad1, 1);
                 break;
             case SLOW:
-                robot.drive.setMotorPowersFromGamepad(gamepad1, 0.5);
+                robot.drive.setMotorPowersFromGamepad(gamepad1, 0.7);
                 break;
             case SUPER_SLOW:
-                robot.drive.setMotorPowersFromGamepad(gamepad1, 0.25);
+                robot.drive.setMotorPowersFromGamepad(gamepad1, 0.5);
                 break;
         }
 
@@ -86,13 +88,9 @@ public class TeleOP extends OpMode {
         }
 
         if (stickyGamepad2.x) {
-//            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
-//                robot.elevator.offsetPosition += 75;
             robot.arm.gripperMode = Arm.GripperMode.DROP;
         }
         if (stickyGamepad2.y) {
-//            if(robot.arm.gripperMode == Arm.GripperMode.GRIP)
-//                robot.elevator.offsetPosition += 75;
             robot.arm.gripperMode = Arm.GripperMode.CAPSTONE;
         }
         if (stickyGamepad2.right_bumper) {
@@ -100,10 +98,9 @@ public class TeleOP extends OpMode {
             elevatorUpStartTime = getRuntime();
         }
         if (stickyGamepad2.left_bumper) {
-            robot.arm.armMode = Arm.ArmMode.FRONT;
             robot.arm.gripperMode = Arm.GripperMode.DROP;
             if(robot.elevator.getTargetPosition() != Elevator.TargetHeight.STONE_15)
-                robot.elevator.offsetPosition += 75;
+                robot.elevator.offsetPosition += 100;
             elevatorDownStartTime = getRuntime();
         }
 
@@ -112,7 +109,11 @@ public class TeleOP extends OpMode {
             elevatorToggle = false;
         }
 
-        if (0.8 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.9) {
+        if (0.2 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 0.3) {
+            robot.arm.armMode = Arm.ArmMode.FRONT;
+        }
+
+        if (1.0 < getRuntime() - elevatorDownStartTime && getRuntime() - elevatorDownStartTime < 1.1) {
             robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
             elevatorToggle = false;
         }
@@ -173,7 +174,13 @@ public class TeleOP extends OpMode {
             elevatorToggle = true;
         }
 
-        telemetry.addData("Motor Powers", robot.drive.getMotorPower());
+        if(robot.elevator.elevatorMode == Elevator.ElevatorMode.UP ||
+                robot.elevator.elevatorMode == Elevator.ElevatorMode.MANUAL ||
+                Math.abs(robot.elevator.getDistanceLeft()) > THRESHOLD)
+            robot.intake.intakeMode = Intake.IntakeMode.IDLE;
+
+        telemetry.addData("Motor Powers", Arrays.toString(robot.drive.getMotorPower()));
+        telemetry.addData("Pose estimate", robot.drive.getPoseEstimate());
         telemetry.addData("Elevator Height", robot.elevator.getTargetPosition());
         telemetry.update();
     }

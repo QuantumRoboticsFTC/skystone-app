@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import eu.qrobotics.skystone.teamcode.subsystems.DriveConstants;
+import eu.qrobotics.skystone.teamcode.subsystems.Odometry;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
 
 @Autonomous
@@ -24,7 +25,9 @@ public class JustForward extends OpMode {
 
     @Override
     public void loop() {
-
+        telemetry.addData("Odometry pose", robot.drive.getLocalizer().getPoseEstimate());
+        telemetry.addData("Odometry position", ((Odometry)robot.drive.getLocalizer()).getWheelPositions());
+        telemetry.update();
     }
 
     @Override

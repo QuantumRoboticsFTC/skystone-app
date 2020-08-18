@@ -55,6 +55,10 @@ public abstract class TwoStoneAuto extends LinearOpMode {
         AutoTrajectoryGenerator trajectoryGenerator = new AutoTrajectoryGenerator(getAlliance(), START_POSE_SIDE);
         robot.drive.setPoseEstimate(flipIfBlue(getAlliance(), START_POSE_SIDE));
 
+        List<Trajectory> trajectoriesLeft = trajectoryGenerator.getTrajectoriesSideArm2Stones(SkystonePattern.LEFT);
+        List<Trajectory> trajectoriesMiddle = trajectoryGenerator.getTrajectoriesSideArm2Stones(SkystonePattern.MIDDLE);
+        List<Trajectory> trajectoriesRight = trajectoryGenerator.getTrajectoriesSideArm2Stones(SkystonePattern.RIGHT);
+
         leftStone = new FixedStoneTracker(
                 new Point(LEFT_STONE_UP_X, LEFT_STONE_UP_Y),
                 new Point(LEFT_STONE_DOWN_X, LEFT_STONE_DOWN_Y)
@@ -106,7 +110,7 @@ public abstract class TwoStoneAuto extends LinearOpMode {
             telemetry.update();
         }
 
-        webcam.stopStreaming();
+//        webcam.stopStreaming();
 
         if (isStopRequested())
             return;
@@ -118,8 +122,26 @@ public abstract class TwoStoneAuto extends LinearOpMode {
                 skystonePattern = SkystonePattern.LEFT;
         }
 
+        List<Trajectory> trajectories = null;
+        switch(skystonePattern) {
+            case MIDDLE:
+                trajectories = trajectoriesMiddle;
+                break;
+            case LEFT:
+                if(getAlliance() == TrajectoryUtils.Alliance.BLUE)
+                    trajectories = trajectoriesRight;
+                else
+                    trajectories = trajectoriesLeft;
+                break;
+            case RIGHT:
+                if(getAlliance() == TrajectoryUtils.Alliance.BLUE)
+                    trajectories = trajectoriesLeft;
+                else
+                    trajectories = trajectoriesRight;
+                break;
+        }
+
         robot.start();
-        List<Trajectory> trajectories = trajectoryGenerator.getTrajectoriesSideArm2Stones(skystonePattern);
 
         robot.drive.followTrajectorySync(trajectories.get(0));
 
