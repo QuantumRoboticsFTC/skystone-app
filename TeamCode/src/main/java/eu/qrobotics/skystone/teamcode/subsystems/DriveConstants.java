@@ -6,14 +6,17 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 @Config
 public class DriveConstants {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2.7, 0, 0.6);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(2, 0, 0.4);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 1.8);
+    public static PIDCoefficients LATERAL_PID = new PIDCoefficients(7.2, 0, 2);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7, 0, 1.6);
     public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 
     public static double WHEEL_RADIUS = 2;
     public static double GEAR_RATIO = 1;
     public static double TRACK_WIDTH = 17.7;
+    public static double WHEEL_BASE = 13.25;
+    public static double LATERAL_MULTIPLIER = 1.6;
 
     public static double kV = 0.015;
     public static double kA = 0.0002;

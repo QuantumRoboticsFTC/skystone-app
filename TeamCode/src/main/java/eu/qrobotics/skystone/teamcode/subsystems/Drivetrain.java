@@ -36,10 +36,13 @@ import eu.qrobotics.skystone.teamcode.util.MecanumUtil;
 
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.BASE_CONSTRAINTS;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.HEADING_PID;
+import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.LATERAL_MULTIPLIER;
+import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.LATERAL_PID;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.MOTOR_VELO_PID;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.RUN_USING_ENCODER;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.TRACK_WIDTH;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.TRANSLATIONAL_PID;
+import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.WHEEL_BASE;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.encoderTicksToInches;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.getMotorVelocityF;
 import static eu.qrobotics.skystone.teamcode.subsystems.DriveConstants.kA;
@@ -86,7 +89,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
     public boolean fieldCentric = false;
 
     Drivetrain(HardwareMap hardwareMap, Robot robot, boolean isAutonomous) {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+        super(kV, kA, kStatic, TRACK_WIDTH, WHEEL_BASE, LATERAL_MULTIPLIER);
 
         this.robot = robot;
         this.isAutonomous = isAutonomous;
@@ -101,7 +104,7 @@ public class Drivetrain extends MecanumDrive implements Subsystem {
             turnController.setInputBounds(0, 2 * Math.PI);
 
             constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
-            follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
+            follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, LATERAL_PID, HEADING_PID);
         } else
             motorPowers = new double[]{0.0, 0.0, 0.0, 0.0};
 

@@ -16,8 +16,10 @@ import java.util.Arrays;
 
 import eu.qrobotics.skystone.teamcode.cv.trackers.FixedStoneTracker;
 import eu.qrobotics.skystone.teamcode.cv.trackers.StoneType;
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator.SkystonePattern;
+import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
+
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.*;
 
 @Autonomous
 @Config

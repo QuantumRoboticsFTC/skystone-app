@@ -2,10 +2,10 @@ package eu.qrobotics.skystone.teamcode.opmode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
 
 @Autonomous
-public class OneStoneAutoRed extends OneStoneAuto {
+public class FourStoneAutoRed extends FourStoneAuto {
     @Override
     Alliance getAlliance() {
         return Alliance.RED;

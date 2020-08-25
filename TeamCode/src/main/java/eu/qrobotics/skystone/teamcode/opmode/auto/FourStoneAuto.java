@@ -18,17 +18,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import eu.qrobotics.skystone.teamcode.cv.trackers.FixedStoneTracker;
+import eu.qrobotics.skystone.teamcode.subsystems.Arm;
+import eu.qrobotics.skystone.teamcode.subsystems.Elevator;
 import eu.qrobotics.skystone.teamcode.subsystems.FoundationGrabber.FoundationGrabberMode;
 import eu.qrobotics.skystone.teamcode.subsystems.Intake;
 import eu.qrobotics.skystone.teamcode.subsystems.Robot;
 import eu.qrobotics.skystone.teamcode.subsystems.SideArm.ClawMode;
 import eu.qrobotics.skystone.teamcode.subsystems.SideArm.PivotMode;
 
-import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.*;
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.START_POSE_SIDE;
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.SkystonePattern;
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.getStoneIntake;
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.getStoneSideArm;
 import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.mirrorForAlliance;
+import static eu.qrobotics.skystone.teamcode.subsystems.Elevator.THRESHOLD;
 
-public abstract class TwoStoneAuto extends BaseAuto {
+public abstract class FourStoneAuto extends BaseAuto {
     SkystonePattern skystonePattern = SkystonePattern.MIDDLE;
 
     public static int LEFT_STONE_UP_X = 70;
@@ -48,23 +54,27 @@ public abstract class TwoStoneAuto extends BaseAuto {
     private OpenCvTrackerApiPipeline trackerApiPipeline;
     private FixedStoneTracker leftStone, centerStone, rightStone;
 
-    private List<Trajectory> getTrajectoriesSideArm2Stones(SkystonePattern skystonePattern) {
+    private Robot robot;
+
+    public List<Trajectory> getTrajectories4Stones(SkystonePattern skystonePattern) {
         MultiTrajectoryBuilder multiTrajectoryBuilder = new MultiTrajectoryBuilder(getAlliance(), START_POSE_SIDE);
 
         int[] stonesOrder = null;
         switch (skystonePattern) {
             case LEFT:
-                stonesOrder = new int[]{0, 3};
+                stonesOrder = new int[]{0, 3, 5, 4};
                 break;
             case MIDDLE:
-                stonesOrder = new int[]{1, 4};
+                stonesOrder = new int[]{1, 4, 5, 3};
                 break;
             case RIGHT:
-                stonesOrder = new int[]{3, 5};
+                stonesOrder = new int[]{3, 5, 4, 2};
                 break;
         }
         Pose2d firstSkystone = getStoneSideArm(stonesOrder[0]);
         Pose2d secondSkystone = getStoneSideArm(stonesOrder[1]);
+        Pose2d thirdStone = getStoneIntake(stonesOrder[2]);
+        Pose2d fourthStone = getStoneIntake(stonesOrder[3]);
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
                 .lineToSplineHeading(firstSkystone.plus(new Pose2d(-3.5, 0, 0)));
@@ -72,7 +82,7 @@ public abstract class TwoStoneAuto extends BaseAuto {
                 makeTrajectoryBuilder(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(51.5, -33), Math.toRadians(0));
+                .splineToConstantHeading(new Vector2d(49, -33), Math.toRadians(0));
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(180))
@@ -82,32 +92,68 @@ public abstract class TwoStoneAuto extends BaseAuto {
                 makeTrajectoryBuilder(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(51.5, -35.5), Math.toRadians(0));
-        multiTrajectoryBuilder.
-                makeTrajectoryBuilder(Math.toRadians(-90))
-                .lineToSplineHeading(new Pose2d(51.5, -43, Math.toRadians(-90)))
-                .splineToConstantHeading(new Vector2d(60, -28), Math.toRadians(90));
-        multiTrajectoryBuilder.
-                makeTrajectoryBuilder(Math.toRadians(-90))
-                .splineToSplineHeading(new Pose2d(20, -45, Math.toRadians(110)), Math.toRadians(110))
-                .splineToSplineHeading(new Pose2d(43, -60, Math.toRadians(180)), Math.toRadians(0));
+                .splineToConstantHeading(new Vector2d(49, -35.25), Math.toRadians(0));
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(10, -35, Math.toRadians(180)), Math.toRadians(180))
-                .splineTo(new Vector2d(5, -35), Math.toRadians(180));
+                .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(180))
+                .splineTo(thirdStone.vec(), thirdStone.getHeading())
+                .addSpatialMarker(new Vector2d(-5, -45), () -> {
+                    robot.intake.intakeMode = Intake.IntakeMode.IN;
+                });
+        multiTrajectoryBuilder.
+                makeTrajectoryBuilder(Math.toRadians(-90))
+                .splineToSplineHeading(new Pose2d(-5, -45, Math.toRadians(180)), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
+                .splineTo(new Vector2d(55, -31), Math.toRadians(90))
+                .addSpatialMarker(new Vector2d(5, -45), () -> {
+                    robot.arm.gripperMode = Arm.GripperMode.GRIP;
+                })
+                .addSpatialMarker(new Vector2d(10, -45), () -> {
+                    robot.arm.armMode = Arm.ArmMode.BACK;
+                });
+        multiTrajectoryBuilder.
+                makeTrajectoryBuilder(Math.toRadians(-90))
+                .splineTo(new Vector2d(20, -50), Math.toRadians(130))
+                .splineTo(new Vector2d(-5, -45), Math.toRadians(180))
+                .splineTo(fourthStone.vec().plus(new Vector2d(3, 7)), fourthStone.getHeading())
+                .addSpatialMarker(new Vector2d(20, -50), () -> {
+                    robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.UP;
+                })
+                .addSpatialMarker(new Vector2d(-5, -45), () -> {
+                    robot.intake.intakeMode = Intake.IntakeMode.IN;
+                });
+        multiTrajectoryBuilder.
+                makeTrajectoryBuilder(Math.toRadians(-90))
+                .splineToSplineHeading(new Pose2d(-5, -45, Math.toRadians(180)), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(43, -35), Math.toRadians(0))
+                .addSpatialMarker(new Vector2d(-5, -45), () -> {
+                    robot.arm.gripperMode = Arm.GripperMode.GRIP;
+                })
+                .addSpatialMarker(new Vector2d(5, -45), () -> {
+                    robot.elevator.nextStone();
+                    robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
+                    robot.elevator.offsetPosition = 10;
+                })
+                .addDisplacementMarker(1, -4, () -> {
+                    robot.arm.armMode = Arm.ArmMode.BACK;
+                });
+        multiTrajectoryBuilder.
+                makeTrajectoryBuilder(MultiTrajectoryBuilder.Speed.SLOW, Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(0, -35), Math.toRadians(180));
         return multiTrajectoryBuilder.build();
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(this, true);
+        robot = new Robot(this, true);
         robot.drive.setPoseEstimate(mirrorForAlliance(getAlliance(), START_POSE_SIDE));
 
-        List<Trajectory> trajectoriesLeft = getTrajectoriesSideArm2Stones(SkystonePattern.LEFT);
-        List<Trajectory> trajectoriesMiddle = getTrajectoriesSideArm2Stones(SkystonePattern.MIDDLE);
-        List<Trajectory> trajectoriesRight = getTrajectoriesSideArm2Stones(SkystonePattern.RIGHT);
+        List<Trajectory> trajectoriesLeft = null;//getTrajectories4Stones(SkystonePattern.LEFT);
+        List<Trajectory> trajectoriesMiddle = getTrajectories4Stones(SkystonePattern.MIDDLE);
+        List<Trajectory> trajectoriesRight = null;//getTrajectories4Stones(SkystonePattern.RIGHT);
 
-        leftStone = new FixedStoneTracker(
+        /*leftStone = new FixedStoneTracker(
                 new Point(LEFT_STONE_UP_X, LEFT_STONE_UP_Y),
                 new Point(LEFT_STONE_DOWN_X, LEFT_STONE_DOWN_Y)
         );
@@ -158,12 +204,20 @@ public abstract class TwoStoneAuto extends BaseAuto {
 
             telemetry.addData("Skystone Pattern", skystonePattern);
             telemetry.update();
+        }*/
+
+        telemetry.addLine("READY");
+        telemetry.update();
+        while(!opModeIsActive() && !isStopRequested()) {
+            Thread.yield();
         }
 
 //        webcam.stopStreaming();
 
         if (isStopRequested())
             return;
+
+        skystonePattern = SkystonePattern.MIDDLE;
 
         if (getAlliance() == Alliance.BLUE) {
             if (skystonePattern == SkystonePattern.LEFT)
@@ -197,62 +251,87 @@ public abstract class TwoStoneAuto extends BaseAuto {
 
         //collect 1st skystone
         robot.sideArm.pivotMode = PivotMode.COLLECT;
-        robot.sleep(0.35);
+        robot.sleep(0.2);
         robot.sideArm.clawMode = ClawMode.STONE;
-        robot.sleep(0.4);
+        robot.sleep(0.2);
         robot.sideArm.pivotMode = PivotMode.MIDDLE;
-        robot.sleep(0.5);
+        robot.sleep(0.2);
 
         robot.drive.followTrajectorySync(trajectories.get(1));
 
         //drop 1st skystone
         robot.sideArm.pivotMode = PivotMode.PLACE_DOWN;
-        robot.sleep(0.2);
+        robot.sleep(0.15);
         robot.sideArm.clawMode = ClawMode.OPEN;
-        robot.sleep(0.2);
+        robot.sleep(0.1);
         robot.sideArm.pivotMode = PivotMode.MIDDLE;
-        robot.sleep(0.2);
+        robot.sleep(0.1);
         robot.sideArm.clawMode = ClawMode.STONE;
 
         robot.drive.followTrajectorySync(trajectories.get(2));
 
         //collect 2nd skystone
         robot.sideArm.clawMode = ClawMode.OPEN;
-        robot.sleep(0.6);
+        robot.sleep(0.2);
         robot.sideArm.pivotMode = PivotMode.COLLECT;
-        robot.sleep(0.35);
+        robot.sleep(0.2);
         robot.sideArm.clawMode = ClawMode.STONE;
-        robot.sleep(0.4);
+        robot.sleep(0.2);
         robot.sideArm.pivotMode = PivotMode.MIDDLE;
-        robot.sleep(0.5);
+        robot.sleep(0.2);
 
         robot.drive.followTrajectorySync(trajectories.get(3));
 
         //drop 2nd skystone
+        robot.intake.intakeMode = Intake.IntakeMode.FOLD;
         robot.sideArm.pivotMode = PivotMode.PLACE_UP;
-        robot.sleep(0.2);
+        robot.sleep(0.15);
         robot.sideArm.clawMode = ClawMode.OPEN;
-        robot.sleep(0.2);
+        robot.sleep(0.1);
+        robot.intake.intakeMode = Intake.IntakeMode.IDLE;
         robot.sideArm.pivotMode = PivotMode.UP;
-        robot.sleep(0.2);
+        robot.sleep(0.1);
         robot.sideArm.clawMode = ClawMode.CLOSE;
 
         robot.drive.followTrajectorySync(trajectories.get(4));
-
-        //grab foundation
-        robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.DOWN;
-        robot.sleep(1);
-
         robot.drive.followTrajectorySync(trajectories.get(5));
 
-        //release foundation
-        robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.UP;
-        robot.sleep(1);
+        robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.DOWN;
+        robot.arm.gripperMode = Arm.GripperMode.DROP;
+        robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
+        robot.elevator.offsetPosition += 100;
+        robot.sleep(0.7);
+        robot.drive.followTrajectory(trajectories.get(6));
+        while(robot.drive.isBusy() && !isStopRequested()) {
+            if(robot.elevator.elevatorMode == Elevator.ElevatorMode.UP && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD) {
+                robot.arm.armMode = Arm.ArmMode.FRONT;
+                robot.sleep(1);
+                robot.elevator.offsetPosition = 0;
+                robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
+                robot.sleep(1);
+                robot.arm.gripperMode = Arm.GripperMode.INTAKE;
+            }
+            robot.sleep(0.05);
+        }
 
-        robot.intake.intakeMode = Intake.IntakeMode.FOLD;
+        robot.drive.followTrajectorySync(trajectories.get(7));
 
-        robot.drive.followTrajectorySync(trajectories.get(6));
+        robot.arm.gripperMode = Arm.GripperMode.DROP;
+        robot.elevator.offsetPosition += 100;
 
+        robot.drive.followTrajectory(trajectories.get(8));
+
+        while(robot.drive.isBusy() && !isStopRequested()) {
+            if(robot.elevator.elevatorMode == Elevator.ElevatorMode.UP && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD) {
+                robot.arm.armMode = Arm.ArmMode.FRONT;
+                robot.sleep(1);
+                robot.elevator.offsetPosition = 0;
+                robot.elevator.elevatorMode = Elevator.ElevatorMode.DOWN;
+                robot.sleep(1);
+                robot.arm.gripperMode = Arm.GripperMode.INTAKE;
+            }
+            robot.sleep(0.05);
+        }
 
         robot.stop();
     }

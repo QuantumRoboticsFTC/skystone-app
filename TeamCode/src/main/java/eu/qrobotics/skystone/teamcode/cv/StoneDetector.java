@@ -41,9 +41,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.AutoTrajectoryGenerator.SkystonePattern;
-import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.Alliance;
+import eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils;
 import kotlin.Pair;
+
+import static eu.qrobotics.skystone.teamcode.opmode.auto.trajectory.TrajectoryUtils.*;
 
 public class StoneDetector {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";

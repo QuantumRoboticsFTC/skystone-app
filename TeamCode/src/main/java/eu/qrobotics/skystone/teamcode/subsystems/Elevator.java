@@ -103,7 +103,6 @@ public class Elevator implements Subsystem {
 
         downPosition = getRawEncoder();
 
-        elevatorMode = ElevatorMode.DISABLED;
         targetPosition = TargetHeight.STONE_1;
     }
 
