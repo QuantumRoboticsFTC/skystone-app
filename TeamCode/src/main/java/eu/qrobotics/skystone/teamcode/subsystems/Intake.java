@@ -43,15 +43,15 @@ public class Intake implements Subsystem {
         intakeMode = IntakeMode.IDLE;
     }
 
-    private boolean checkSwitch() {
-        return intakeButton.getState();
+    public boolean checkSwitch() {
+        return !intakeButton.getState();
     }
 
     @Override
     public void update() {
         switch (intakeMode) {
             case IN:
-                if (checkSwitch()) {
+                if (!checkSwitch()) {
                     leftIntake.setPower(INTAKE_IN_SPEED);
                     rightIntake.setPower(INTAKE_IN_SPEED);
                 } else {

@@ -26,7 +26,7 @@ public class SideArm implements Subsystem {
     public static double PIVOT_UP = 0.56;
     public static double PIVOT_MIDDLE = 0.45;
     public static double PIVOT_COLLECT = 0.10;
-    public static double PIVOT_PLACE_UP = 0.25;
+    public static double PIVOT_PLACE_UP = 0.22;
     public static double PIVOT_PLACE_DOWN = 0.15;
 
     public static double CLAW_CLOSE = 0;

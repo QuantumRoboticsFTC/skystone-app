@@ -6,9 +6,9 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 @Config
 public class DriveConstants {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 1.8);
-    public static PIDCoefficients LATERAL_PID = new PIDCoefficients(7.2, 0, 2);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7, 0, 1.6);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 2.5);
+    public static PIDCoefficients LATERAL_PID = new PIDCoefficients(7.5, 0, 2);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7.6, 0, 1.6);
     public static final boolean RUN_USING_ENCODER = false;
     public static final PIDCoefficients MOTOR_VELO_PID = null;
 

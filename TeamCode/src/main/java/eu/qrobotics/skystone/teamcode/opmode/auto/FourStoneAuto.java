@@ -77,22 +77,26 @@ public abstract class FourStoneAuto extends BaseAuto {
         Pose2d fourthStone = getStoneIntake(stonesOrder[3]);
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
-                .lineToSplineHeading(firstSkystone.plus(new Pose2d(-3.5, 0, 0)));
+                .lineToSplineHeading(firstSkystone.plus(new Pose2d(-2.5,0, 0)));
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(49, -33), Math.toRadians(0));
+                .splineToConstantHeading(new Vector2d(50.5, -32.5), Math.toRadians(0));
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(secondSkystone.getX(), secondSkystone.getY()), Math.toRadians(180));
+                .splineToConstantHeading(secondSkystone.vec().plus(new Vector2d(1, 1)), Math.toRadians(180));
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(-5, -45), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(49, -35.25), Math.toRadians(0));
+                .splineToConstantHeading(new Vector2d(38, -45), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(46.5, -33.25), Math.toRadians(0))
+                .addSpatialMarker(new Vector2d(20, -45), () -> {
+                    robot.sideArm.pivotMode = PivotMode.PLACE_UP;
+                });
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(180))
@@ -106,10 +110,18 @@ public abstract class FourStoneAuto extends BaseAuto {
                 .splineToSplineHeading(new Pose2d(-5, -45, Math.toRadians(180)), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(5, -45), Math.toRadians(0))
                 .splineTo(new Vector2d(55, -31), Math.toRadians(90))
-                .addSpatialMarker(new Vector2d(5, -45), () -> {
-                    robot.arm.gripperMode = Arm.GripperMode.GRIP;
+                .addSpatialMarker(new Vector2d(-5, -45), () -> {
+                    Thread thread = new Thread(){
+                        public void run(){
+                            while(!robot.intake.checkSwitch()) {
+                                robot.sleep(0.05);
+                            }
+                            robot.arm.gripperMode = Arm.GripperMode.GRIP;
+                        }
+                    };
+                    thread.start();
                 })
-                .addSpatialMarker(new Vector2d(10, -45), () -> {
+                .addSpatialMarker(new Vector2d(20, -45), () -> {
                     robot.arm.armMode = Arm.ArmMode.BACK;
                 });
         multiTrajectoryBuilder.
@@ -126,14 +138,14 @@ public abstract class FourStoneAuto extends BaseAuto {
         multiTrajectoryBuilder.
                 makeTrajectoryBuilder(Math.toRadians(-90))
                 .splineToSplineHeading(new Pose2d(-5, -45, Math.toRadians(180)), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(43, -35), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(45, -41), Math.toRadians(0))
                 .addSpatialMarker(new Vector2d(-5, -45), () -> {
                     robot.arm.gripperMode = Arm.GripperMode.GRIP;
                 })
-                .addSpatialMarker(new Vector2d(5, -45), () -> {
+                .addSpatialMarker(new Vector2d(10, -45), () -> {
                     robot.elevator.nextStone();
                     robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
-                    robot.elevator.offsetPosition = 10;
+                    robot.elevator.offsetPosition = 30;
                 })
                 .addDisplacementMarker(1, -4, () -> {
                     robot.arm.armMode = Arm.ArmMode.BACK;
@@ -284,8 +296,6 @@ public abstract class FourStoneAuto extends BaseAuto {
 
         //drop 2nd skystone
         robot.intake.intakeMode = Intake.IntakeMode.FOLD;
-        robot.sideArm.pivotMode = PivotMode.PLACE_UP;
-        robot.sleep(0.15);
         robot.sideArm.clawMode = ClawMode.OPEN;
         robot.sleep(0.1);
         robot.intake.intakeMode = Intake.IntakeMode.IDLE;
@@ -298,9 +308,10 @@ public abstract class FourStoneAuto extends BaseAuto {
 
         robot.foundationGrabber.foundationGrabberMode = FoundationGrabberMode.DOWN;
         robot.arm.gripperMode = Arm.GripperMode.DROP;
+        robot.sleep(0.3);
         robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;
         robot.elevator.offsetPosition += 100;
-        robot.sleep(0.7);
+        robot.sleep(0.4);
         robot.drive.followTrajectory(trajectories.get(6));
         while(robot.drive.isBusy() && !isStopRequested()) {
             if(robot.elevator.elevatorMode == Elevator.ElevatorMode.UP && Math.abs(robot.elevator.getDistanceLeft()) <= THRESHOLD) {
@@ -316,7 +327,9 @@ public abstract class FourStoneAuto extends BaseAuto {
 
         robot.drive.followTrajectorySync(trajectories.get(7));
 
+        robot.sleep(0.3);
         robot.arm.gripperMode = Arm.GripperMode.DROP;
+        robot.sleep(0.3);
         robot.elevator.offsetPosition += 100;
 
         robot.drive.followTrajectory(trajectories.get(8));
