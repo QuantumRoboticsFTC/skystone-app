@@ -13,6 +13,7 @@ import eu.qrobotics.skystone.teamcode.subsystems.Robot;
 import eu.qrobotics.skystone.teamcode.subsystems.RuletaAlexMircea.RuletaMode;
 import eu.qrobotics.skystone.teamcode.util.StickyGamepad;
 
+import static eu.qrobotics.skystone.teamcode.subsystems.Elevator.HOLD_POWER;
 import static eu.qrobotics.skystone.teamcode.subsystems.Elevator.THRESHOLD;
 
 @TeleOp
@@ -153,7 +154,10 @@ public class TeleOP extends OpMode {
                 robot.elevator.manualPower = gamepad2.right_trigger * 0.75;
             } else if (gamepad2.left_trigger > 0.1) {
                 robot.elevator.elevatorMode = Elevator.ElevatorMode.MANUAL;
-                robot.elevator.manualPower = -gamepad2.left_trigger * 0.2;
+                if(robot.elevator.getEncoder() > 1000)
+                    robot.elevator.manualPower = -gamepad2.left_trigger * (-0.05);
+                else
+                    robot.elevator.manualPower = -gamepad2.left_trigger * 0.2;
             } else {
                 if (robot.elevator.elevatorMode == Elevator.ElevatorMode.MANUAL) {
                     robot.elevator.elevatorMode = Elevator.ElevatorMode.UP;

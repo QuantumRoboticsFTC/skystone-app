@@ -29,10 +29,12 @@ public class Arm implements Subsystem {
 
     public enum ArmMode {
         FRONT,
+        AUTONOMOUS_BACK, // why...
         BACK
     }
 
     public static double ARM_FRONT_POSITION = 0;
+    public static double ARM_AUTONOMOUS_BACK_POSITION = 0.95;
     public static double ARM_BACK_POSITION = 1;
 
     public GripperMode gripperMode;
@@ -77,6 +79,9 @@ public class Arm implements Subsystem {
         switch (armMode) {
             case FRONT:
                 armServo.setPosition(ARM_FRONT_POSITION);
+                break;
+            case AUTONOMOUS_BACK:
+                armServo.setPosition(ARM_AUTONOMOUS_BACK_POSITION);
                 break;
             case BACK:
                 armServo.setPosition(ARM_BACK_POSITION);
